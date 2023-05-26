@@ -268,7 +268,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="reviews__btn--wrapper">
-                <button className="btn home__cta--btn" onClick={openModal}>Login</button>
+                <button className="btn home__cta--btn" onClick={openModal}>
+                  Login
+                </button>
               </div>
             </div>
           </div>
