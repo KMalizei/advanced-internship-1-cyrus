@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useRef } from "react";
 import { AiFillBulb, AiFillFileText, AiFillAudio } from "react-icons/ai";
@@ -267,7 +268,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="reviews__btn--wrapper">
-                <button className="btn home__cta--btn">Login</button>
+                <button className="btn home__cta--btn" onClick={openModal}>Login</button>
               </div>
             </div>
           </div>
