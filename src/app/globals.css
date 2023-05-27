@@ -933,9 +933,10 @@ FOR-YOU PAGE
 }
 
 .book__image--wrapper {
-  width: 140px;
-  height: 140px;
-  min-width: 140px;
+  width: 172px;
+  height: 172px;
+  min-width: 172px;
+  max-height: 172px;
 }
 
 .book__image {
@@ -989,6 +990,131 @@ FOR-YOU PAGE
   border-radius: 50%;
   align-items: center;
   padding: 4px 4px 4px 6px;
+}
+
+.for-you__sub--title {
+  font-weight: 300;
+  color: #394547;
+  margin-bottom: 16px;
+}
+
+.for-you__recommended--books {
+  display: flex;
+  overflow-x: hidden;
+  gap: 16px;
+  scroll-snap-type: mandatory;
+  scroll-snap-type: x;
+  margin-bottom: 32px;
+}
+
+.for-you__recommended--books-link {
+  position: relative;
+  scroll-snap-align: start;
+  padding: 32px 12px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  max-width: 200px;
+  width: 100%;
+}
+
+.for-you__recommended--books-link:hover {
+  background-color: #f1f6f4;
+}
+
+audio {
+  width: 300px;
+  height: 54px;
+}
+
+audio:not([controls]) {
+  display: none !important;
+}
+
+/* .book__image--wrapper {
+  width: 172px;
+  height: 172px;
+}
+
+.book__image {
+  width: 100%;
+  height: 100%;
+} */
+
+.recommended__book--title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #032b41;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.recommended__book--author {
+  font-size: 14px;
+  color: #6b757b;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.recommended__book--sub-title {
+  font-size: 14px;
+  color: #394547;
+  margin-bottom: 8px;
+}
+
+.recommended__book--details-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.recommended__book--details {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 300;
+  color: #6b757b;
+}
+
+.recommended__book--details-icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.recommended__book--details-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.recommended__book--details {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 300;
+  color: #6b757b;
+}
+
+.recommended__book--details-icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.book__pill {
+  background-color: #032b41;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: 18px;
+  padding: 0 8px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #fff;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
 }
 
 /* 
