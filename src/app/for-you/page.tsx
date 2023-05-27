@@ -43,6 +43,8 @@ function Page() {
     selectedBookQuery();
   }, []);
 
+  
+
   return (
     <div className="wrapper">
       <SearchBar />
