@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import { clear } from "console";
 import React, { useState } from "react";
 import {
   GoogleAuthProvider,
@@ -9,33 +8,21 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../firebase";
-import "firebaseui/dist/firebaseui.css";
 
 function LogInModal({ closeModal }: { closeModal: any }) {
   const [logIn, setLogIn] = useState(true);
   const [signUp, setSignUp] = useState(false);
-  const [password, setPassword] = useState(false);
+  const [passwordModal, setPasswordModal] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleGoogle = async (e: any) => {
-    const provider = await new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
-  };
+  const handleEmailSignUp = async () => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user
+    // await createUserProfileDocument(user);
+  }
 
   // const handleEmailLogIn = async (e: any) => {
-  //   const auth = getAuth();
-  //   signInWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //       // Signed in
-  //       const user = userCredential.user;
-  //       // ...
-  //     })
-  //     .catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-  //     });
-  // };
-
-  // const handleEmailSignUp = async (e: any) => {
   //   const auth = getAuth();
   //   createUserWithEmailAndPassword(auth, email, password)
   //     .then((userCredential) => {
@@ -50,6 +37,11 @@ function LogInModal({ closeModal }: { closeModal: any }) {
   //     });
   // };
 
+  const handleGoogle = async (e: any) => {
+    const provider = await new GoogleAuthProvider();
+    return signInWithPopup(auth, provider);
+  };
+
   function signUpModal() {
     if (signUp === false) {
       setLogIn(false);
@@ -63,24 +55,24 @@ function LogInModal({ closeModal }: { closeModal: any }) {
   function logInModal() {
     if (logIn === false) {
       setSignUp(false);
-      setPassword(false);
+      setPasswordModal(false);
       setLogIn(true);
     } else {
-      setPassword(false);
+      setPasswordModal(false);
       setLogIn(false);
       setSignUp(true);
     }
   }
 
-  function passwordModal() {
-    if (password === false) {
+  function swapToPasswordModal() {
+    if (passwordModal === false) {
       setLogIn(false);
       setSignUp(false);
-      setPassword(true);
+      setPasswordModal(true);
     } else {
-      setPassword(false);
-      setLogIn(true);
+      setPasswordModal(false);
       setSignUp(false);
+      setLogIn(true);
     }
   }
 
@@ -143,7 +135,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
               </button>
             </form>
           </div>
-          <div className="auth__forgot--password" onClick={passwordModal}>
+          <div className="auth__forgot--password" onClick={swapToPasswordModal}>
             Forgot your password?
           </div>
           <button className="auth__switch--btn" onClick={logInModal}>
@@ -194,11 +186,13 @@ function LogInModal({ closeModal }: { closeModal: any }) {
                 className="auth__main--input"
                 type="text"
                 placeholder="Email Address"
+                onChange={(e) => setEmail(e.target.value)}
               />{" "}
               <input
                 className="auth__main--input"
                 type="password"
                 placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button className="btn">
                 <span>Sign up</span>
@@ -226,7 +220,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           </div>
         </>
       )}
-      {password && (
+      {passwordModal && (
         <>
           <div className="auth__content">
             <div className="auth__title">Reset your password</div>
