@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -16,26 +16,25 @@ function LogInModal({ closeModal }: { closeModal: any }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleEmailSignUp = async () => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user
-    // await createUserProfileDocument(user);
-  }
+  const handleEmailSignUp = async (e: any) => {
+    e.preventDefault();
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+  };
 
-  // const handleEmailLogIn = async (e: any) => {
-  //   const auth = getAuth();
-  //   createUserWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //       // Signed in
-  //       const user = userCredential.user;
-  //       // ...
-  //     })
-  //     .catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-  //       // ..
-  //     });
-  // };
+  const handleEmailLogIn = async (e: any) => {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleGoogle = async (e: any) => {
     const provider = await new GoogleAuthProvider();
@@ -87,7 +86,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
                 <svg
                   stroke="currentColor"
                   fill="currentColor"
-                  stroke-width="0"
+                  strokeWidth="0"
                   viewBox="0 0 448 512"
                   height="1em"
                   width="1em"
@@ -119,18 +118,26 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
             </div>
-            <form className="auth__main--form">
+            <form
+              id="log__in--form"
+              className="auth__main--form"
+              onSubmit={handleEmailLogIn}
+            >
               <input
                 className="auth__main--input"
                 type="text"
                 placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               ></input>
               <input
                 className="auth__main--input"
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               ></input>
-              <button className="btn">
+              <button className="btn" type="submit">
                 <span>Login</span>
               </button>
             </form>
@@ -145,7 +152,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="0"
+              strokeWidth="0"
               viewBox="0 0 24 24"
               height="1em"
               width="1em"
@@ -163,7 +170,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
         <>
           <div className="auth__content">
             <div className="auth__title">Sign up to Summarist</div>
-            <button className="btn google__btn--wrapper">
+            <button className="btn google__btn--wrapper" onClick={handleGoogle}>
               <figure className="google__icon--mask">
                 <img
                   alt="google"
@@ -181,10 +188,14 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
             </div>
-            <form className="auth__main--form">
+            <form
+              id="sign__up--form"
+              className="auth__main--form"
+              onSubmit={handleEmailSignUp}
+            >
               <input
                 className="auth__main--input"
-                type="text"
+                type="email"
                 placeholder="Email Address"
                 onChange={(e) => setEmail(e.target.value)}
               />{" "}
@@ -194,7 +205,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="btn">
+              <button className="btn" type="submit">
                 <span>Sign up</span>
               </button>
             </form>
@@ -206,7 +217,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="0"
+              strokeWidth="0"
               viewBox="0 0 24 24"
               height="1em"
               width="1em"
@@ -224,7 +235,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
         <>
           <div className="auth__content">
             <div className="auth__title">Reset your password</div>
-            <form className="auth__main--form">
+            <form id="forgot-password__form" className="auth__main--form">
               <input
                 className="auth__main--input"
                 type="text"
@@ -242,7 +253,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="0"
+              strokeWidth="0"
               viewBox="0 0 24 24"
               height="1em"
               width="1em"
