@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import SearchBar from "../components/SearchBar";
-import SideBar from "../components/SideBar";
+import SearchBar from "../components/UI/SearchBar";
+import SideBar from "../components/UI/SideBar";
 import RecommendedBooks from "../components/RecomendedBooks";
 import RecommendedBooks2 from "../components/RecomendedBooks2";
 import axios from "axios";

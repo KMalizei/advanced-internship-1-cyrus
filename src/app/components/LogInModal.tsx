@@ -10,74 +10,87 @@ import {
 import { auth } from "../firebase";
 
 function LogInModal({ closeModal }: { closeModal: any }) {
-  const [logIn, setLogIn] = useState(true);
-  const [signUp, setSignUp] = useState(false);
+  const [logInModal, setLogInModal] = useState(true);
+  const [signUpModal, setSignUpModal] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleEmailSignUp = async (e: any) => {
+    const auth = getAuth();
     e.preventDefault();
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
-    );
-  };
-
-  const handleEmailLogIn = async (e: any) => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
+    )
       .then((userCredential) => {
-        console.log(userCredential);
+        const user = userCredential;
+        closeModal();
       })
       .catch((error) => {
-        console.log(error);
+        alert(error.message);
+      });
+  };
+
+  const handleEmailLogIn = (e: any) => {
+    const auth = getAuth();
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        closeModal();
+      })
+      .catch((error) => {
+        alert(error.message);
       });
   };
 
   const handleGoogle = async (e: any) => {
     const provider = await new GoogleAuthProvider();
+    closeModal();
     return signInWithPopup(auth, provider);
   };
 
-  function signUpModal() {
-    if (signUp === false) {
-      setLogIn(false);
-      setSignUp(true);
+  function swapToSignUpModal() {
+    if (signUpModal === false) {
+      setLogInModal(false);
+      setSignUpModal(true);
     } else {
-      setSignUp(false);
-      setLogIn(true);
+      setSignUpModal(false);
+      setLogInModal(true);
     }
   }
 
-  function logInModal() {
-    if (logIn === false) {
-      setSignUp(false);
+  function swapToLogInModal() {
+    if (logInModal === false) {
+      setSignUpModal(false);
       setPasswordModal(false);
-      setLogIn(true);
+      setLogInModal(true);
     } else {
       setPasswordModal(false);
-      setLogIn(false);
-      setSignUp(true);
+      setLogInModal(false);
+      setSignUpModal(true);
     }
   }
 
   function swapToPasswordModal() {
     if (passwordModal === false) {
-      setLogIn(false);
-      setSignUp(false);
+      setLogInModal(false);
+      setSignUpModal(false);
       setPasswordModal(true);
     } else {
       setPasswordModal(false);
-      setSignUp(false);
-      setLogIn(true);
+      setSignUpModal(false);
+      setLogInModal(true);
     }
   }
 
+  const loginSuccess = () => {};
+
   return (
     <div className="auth">
-      {logIn && (
+      {logInModal && (
         <>
           <div className="auth__content">
             <div className="auth__title">Log in to Summarist</div>
@@ -145,7 +158,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           <div className="auth__forgot--password" onClick={swapToPasswordModal}>
             Forgot your password?
           </div>
-          <button className="auth__switch--btn" onClick={logInModal}>
+          <button className="auth__switch--btn" onClick={swapToLogInModal}>
             Don{`'`}t have an account?
           </button>
           <div className="auth__close--btn" onClick={closeModal}>
@@ -166,7 +179,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           </div>
         </>
       )}
-      {signUp && (
+      {signUpModal && (
         <>
           <div className="auth__content">
             <div className="auth__title">Sign up to Summarist</div>
@@ -210,7 +223,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
               </button>
             </form>
           </div>
-          <button className="auth__switch--btn" onClick={signUpModal}>
+          <button className="auth__switch--btn" onClick={swapToSignUpModal}>
             Already have an account?
           </button>
           <div className="auth__close--btn" onClick={closeModal}>
@@ -246,7 +259,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
               </button>
             </form>
           </div>
-          <button className="auth__switch--btn" onClick={logInModal}>
+          <button className="auth__switch--btn" onClick={swapToLogInModal}>
             Go to login
           </button>
           <div className="auth__close--btn" onClick={closeModal}>

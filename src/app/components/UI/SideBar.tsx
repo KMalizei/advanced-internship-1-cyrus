@@ -1,7 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
+import React, { useState, useRef } from "react";
 
 function SideBar() {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const modal__dimRef = useRef(null);
+
+  function openModal() {
+    setModalOpen(true);
+  }
+
+  function closeModal() {
+    setModalOpen(false);
+  }
+
+  function handleOverlayClick(event: any) {
+    if (event.target === modal__dimRef.current) {
+      closeModal();
+    }
+  }
   return (
     <div>
       <div className="sidebar sidebar--closed">
