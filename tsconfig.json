@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/book/[id]"
-  ],
+    "src/app/book/[id]",
+    "src/components/UI/SideBar.tsx" ],
   "exclude": ["node_modules"]
 }

@@ -1,13 +1,13 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { authState } from "../../utilities/authStore";
 import LogInModal from "./LogInModal";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function SideBar() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modal__dimRef = useRef(null);
   const setUserEmail = authState((state) => state.setUserEmail);
@@ -22,7 +22,7 @@ function SideBar() {
     setIsModalOpen(false);
   }
 
-  function handleOverlayClick() {
+  function handleOverlayClick(event: any) {
     if (event.target === modal__dimRef.current) {
       closeModal();
     }
@@ -57,8 +57,12 @@ function SideBar() {
           </div>
           <div className="sidebar__wrapper">
             <div className="sidebar__top">
-              <a href="/for-you" className={`sidebar__link--wrapper ${router.pathname === '/for-you' ? 'active--tab' : ''}`} >
-                <div className="sidebar__link--line active--tab"></div>
+              <a href="/for-you" className={`sidebar__link--wrapper`}>
+                <div
+                  className={`sidebar__link--line ${
+                    window.location.pathname === "/for-you" ? `active--tab` : ""
+                  }`}
+                ></div>
                 <div className="sidebar__icon--wrapper">
                   <svg
                     stroke="currentColor"
@@ -75,7 +79,11 @@ function SideBar() {
                 <div className="sidebar__link--text">For you</div>
               </a>
               <a className="sidebar__link--wrapper" href="/library">
-                <div className="sidebar__link--line "></div>
+                <div
+                  className={`sidebar__link--line ${
+                    window.location.pathname === "/library" ? `active--tab` : ""
+                  }`}
+                ></div>
                 <div className="sidebar__icon--wrapper">
                   <svg
                     stroke="currentColor"
@@ -92,7 +100,7 @@ function SideBar() {
                 <div className="sidebar__link--text">My Library</div>
               </a>
               <div className="sidebar__link--wrapper sidebar__link--not-allowed">
-                <div className="sidebar__link--line "></div>
+                <div className={`sidebar__link--line`}></div>
                 <div className="sidebar__icon--wrapper">
                   <svg
                     stroke="currentColor"
@@ -131,7 +139,11 @@ function SideBar() {
             </div>
             <div className="sidebar__bottom">
               <a className="sidebar__link--wrapper" href="/settings">
-                <div className="sidebar__link--line "></div>
+                <div
+                  className={`sidebar__link--line ${
+                    window.location.pathname === "/settings" ? `active--tab` : ""
+                  }`}
+                ></div>
                 <div className="sidebar__icon--wrapper">
                   <svg
                     stroke="currentColor"
