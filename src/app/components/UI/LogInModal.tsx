@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -7,60 +7,102 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { db } from "../../firebase";
+import { authState } from "../../utilities/authStore";
+import { useRouter } from "next/navigation";
+import { doc, setDoc } from "firebase/firestore";
 
 function LogInModal({ closeModal }: { closeModal: any }) {
+  const router = useRouter();
   const [logInModal, setLogInModal] = useState(true);
   const [signUpModal, setSignUpModal] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setUserEmail = authState((state) => state.setUserEmail);
+  const setIsUserAuth = authState((state) => state.setIsUserAuth);
 
-  const handleEmailSignUp = async (e: any) => {
-    const auth = getAuth();
-    e.preventDefault();
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    )
-      .then((userCredential) => {
-        const user = userCredential;
-        closeModal();
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-
-  const handleEmailLogIn = (e: any) => {
-    const auth = getAuth();
-    e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        closeModal();
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-
-  const handleGoogle = async (e: any) => {
-    const provider = await new GoogleAuthProvider();
-    closeModal();
-    return signInWithPopup(auth, provider);
-  };
-
-  function swapToSignUpModal() {
-    if (signUpModal === false) {
-      setLogInModal(false);
-      setSignUpModal(true);
-    } else {
-      setSignUpModal(false);
-      setLogInModal(true);
+  const emailSignUp = async (e: any) => {
+    try {
+      const auth = getAuth();
+      e.preventDefault();
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = result.user;
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      loginAuthSuccess();
+    } catch (error) {
+      alert(error);
     }
-  }
+  };
+
+  const emailLogIn = async (e: any) => {
+    try {
+      const auth = getAuth();
+      e.preventDefault();
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const user = result.user;
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      loginAuthSuccess();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const guestLogIn = async (e: any) => {
+    try {
+      const auth = getAuth();
+      e.preventDefault();
+      const email = "guest123@gmail.com";
+      const password = "guest123";
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const user = result.user;
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      loginAuthSuccess();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const googleLogIn = async (e: any) => {
+    const auth = getAuth();
+    const provider = await new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      loginAuthSuccess();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const loginAuthSuccess = () => {
+    setIsUserAuth(true);
+    setUserEmail(email);
+    closeModal();
+    router.push("for-you");
+  };
 
   function swapToLogInModal() {
     if (logInModal === false) {
@@ -74,19 +116,25 @@ function LogInModal({ closeModal }: { closeModal: any }) {
     }
   }
 
-  function swapToPasswordModal() {
-    if (passwordModal === false) {
+  function swapToSignUpModal() {
+    if (signUpModal === false) {
       setLogInModal(false);
-      setSignUpModal(false);
-      setPasswordModal(true);
+      setSignUpModal(true);
     } else {
-      setPasswordModal(false);
       setSignUpModal(false);
       setLogInModal(true);
     }
   }
 
-  const loginSuccess = () => {};
+  function swapToPasswordModal() {
+    if (passwordModal === false) {
+      setLogInModal(false);
+      setPasswordModal(true);
+    } else {
+      setPasswordModal(false);
+      setLogInModal(true);
+    }
+  }
 
   return (
     <div className="auth">
@@ -94,7 +142,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
         <>
           <div className="auth__content">
             <div className="auth__title">Log in to Summarist</div>
-            <button className="btn guest__btn--wrapper">
+            <button className="btn guest__btn--wrapper" onClick={guestLogIn}>
               <figure className="google__icon--mask guest__icon--mask">
                 <svg
                   stroke="currentColor"
@@ -113,7 +161,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
             </div>
-            <button className="btn google__btn--wrapper" onClick={handleGoogle}>
+            <button className="btn google__btn--wrapper" onClick={googleLogIn}>
               <figure className="google__icon--mask">
                 <img
                   alt="google"
@@ -134,7 +182,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <form
               id="log__in--form"
               className="auth__main--form"
-              onSubmit={handleEmailLogIn}
+              onSubmit={emailLogIn}
             >
               <input
                 className="auth__main--input"
@@ -183,7 +231,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
         <>
           <div className="auth__content">
             <div className="auth__title">Sign up to Summarist</div>
-            <button className="btn google__btn--wrapper" onClick={handleGoogle}>
+            <button className="btn google__btn--wrapper" onClick={googleLogIn}>
               <figure className="google__icon--mask">
                 <img
                   alt="google"
@@ -204,7 +252,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <form
               id="sign__up--form"
               className="auth__main--form"
-              onSubmit={handleEmailSignUp}
+              onSubmit={emailSignUp}
             >
               <input
                 className="auth__main--input"

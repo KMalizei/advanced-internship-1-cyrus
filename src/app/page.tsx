@@ -5,7 +5,7 @@ import { AiFillBulb, AiFillFileText, AiFillAudio } from "react-icons/ai";
 import { BsStarHalf, BsStarFill } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
-import LogInModal from "./components/LogInModal";
+import LogInModal from "./components/UI/LogInModal";
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
