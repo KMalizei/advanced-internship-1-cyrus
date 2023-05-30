@@ -190,7 +190,7 @@ function SideBar() {
                 <div className="sidebar__link--text">Help &amp; Support</div>
               </div>
               <div>
-                {isUserAuth ? (
+                {isUserAuth === true ? (
                   <div className="sidebar__link--wrapper" onClick={logUserOut}>
                     <div className="sidebar__link--line "></div>
                     <div className="sidebar__icon--wrapper">
