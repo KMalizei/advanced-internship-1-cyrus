@@ -4,15 +4,12 @@ import React, { useEffect, useState, useRef } from "react";
 import SearchBar from "../components/UI/SearchBar";
 import SideBar from "../components/UI/SideBar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
-import { useAuthStore } from "../utilities/authStore";
 import LogInModal from "../components/UI/LogInModal";
 
 function UserSettings() {
   const [email, setEmail] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modal__dimRef = useRef<HTMLDivElement>(null);
-  const authStore = useAuthStore();
 
   useEffect(() => {
     const auth = getAuth();
@@ -20,7 +17,6 @@ function UserSettings() {
       if (user) {
         const userEmail = user.email;
         setEmail(userEmail);
-        localStorage.setItem("email", userEmail);
       }
     });
 
