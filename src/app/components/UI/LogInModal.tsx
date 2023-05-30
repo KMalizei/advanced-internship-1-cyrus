@@ -1,43 +1,48 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
 } from "firebase/auth";
 import { db } from "../../firebase";
-import { authState } from "../../utilities/authStore";
 import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
+import { useAuthStore } from "@/app/utilities/authStore";
 
 function LogInModal({ closeModal }: { closeModal: any }) {
+  const authStore = useAuthStore();
   const router = useRouter();
   const [logInModal, setLogInModal] = useState(true);
   const [signUpModal, setSignUpModal] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const setUserEmail = authState((state) => state.setUserEmail);
-  const setIsUserAuth = authState((state) => state.setIsUserAuth);
 
   const emailSignUp = async (e: any) => {
     try {
       const auth = getAuth();
       e.preventDefault();
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = result.user;
+      await setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+      const user = auth.currentUser;
       if (user) {
+        loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
         });
       }
-      loginAuthSuccess();
+      closeAndRoute();
     } catch (error) {
       alert(error);
     }
@@ -47,14 +52,22 @@ function LogInModal({ closeModal }: { closeModal: any }) {
     try {
       const auth = getAuth();
       e.preventDefault();
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const user = result.user;
+      await setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+      const user = auth.currentUser;
       if (user) {
+        loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
         });
       }
-      loginAuthSuccess();
+      closeAndRoute();
     } catch (error) {
       alert(error);
     }
@@ -62,18 +75,26 @@ function LogInModal({ closeModal }: { closeModal: any }) {
 
   const guestLogIn = async (e: any) => {
     try {
-      const auth = getAuth();
       e.preventDefault();
+      const auth = getAuth();
       const email = "guest123@gmail.com";
       const password = "guest123";
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const user = result.user;
+      await setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+      const user = auth.currentUser;
       if (user) {
+        loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
         });
       }
-      loginAuthSuccess();
+      closeAndRoute();
     } catch (error) {
       alert(error);
     }
@@ -83,26 +104,31 @@ function LogInModal({ closeModal }: { closeModal: any }) {
     const auth = getAuth();
     const provider = await new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
+      await signInWithPopup(auth, provider);
+      const user = auth.currentUser;
       if (user) {
+        loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
         });
       }
-      loginAuthSuccess();
+      closeAndRoute();
     } catch (error) {
       alert(error);
     }
   };
 
   const loginAuthSuccess = () => {
-    setIsUserAuth(true);
-    setUserEmail(email);
+    const user = getAuth().currentUser;
+    localStorage.setItem("email-storage", user?.email || "");
+    localStorage.setItem("auth-storage", "true");
+    authStore.setIsUserAuth(true);
+  };
+
+  function closeAndRoute() {
     closeModal();
     router.push("for-you");
-  };
+  }
 
   function swapToLogInModal() {
     if (logInModal === false) {
@@ -135,6 +161,17 @@ function LogInModal({ closeModal }: { closeModal: any }) {
       setLogInModal(true);
     }
   }
+
+  function routePersistentLogIn() {
+    if (localStorage.getItem("auth-storage") === "true") {
+      authStore.setIsUserAuth(true);
+      router.push("for-you");
+    }
+  }
+
+  useEffect(() => {
+    routePersistentLogIn();
+  }, []);
 
   return (
     <div className="auth">

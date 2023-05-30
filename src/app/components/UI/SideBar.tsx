@@ -1,18 +1,15 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useRef, useEffect } from "react";
-import { authState } from "../../utilities/authStore";
 import LogInModal from "./LogInModal";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { auth } from "../../firebase";
+import { useAuthStore } from "../../utilities/authStore";
 
 function SideBar() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modal__dimRef = useRef(null);
-  const setUserEmail = authState((state) => state.setUserEmail);
-  const setIsUserAuth = authState((state) => state.setIsUserAuth);
-  const isUserAuth = authState((state) => state.isUserAuth);
+  const authStore = useAuthStore();
 
   function openModal() {
     setIsModalOpen(true);
@@ -29,10 +26,15 @@ function SideBar() {
   }
 
   const logUserOut = () => {
-    setUserEmail(null);
-    setIsUserAuth(false);
-    router.push("/for-you");
+    auth.signOut();
+    authStore.setIsUserAuth(false);
+    localStorage.removeItem("auth-storage");
+    localStorage.removeItem("email-storage");
   };
+
+  console.log(localStorage.getItem("auth-storage"));
+
+  const isUserAuth = authStore.isUserAuth;
 
   return (
     <>
@@ -141,7 +143,9 @@ function SideBar() {
               <a className="sidebar__link--wrapper" href="/settings">
                 <div
                   className={`sidebar__link--line ${
-                    window.location.pathname === "/settings" ? `active--tab` : ""
+                    window.location.pathname === "/settings"
+                      ? `active--tab`
+                      : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">

@@ -1,15 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { AiFillBulb, AiFillFileText, AiFillAudio } from "react-icons/ai";
 import { BsStarHalf, BsStarFill } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
 import LogInModal from "./components/UI/LogInModal";
+import { auth } from "./firebase";
+import { useAuthStore } from "./utilities/authStore";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
   const modal__dimRef = useRef(null);
+  const authStore = useAuthStore();
+  const router = useRouter();
 
   function openModal() {
     setModalOpen(true);
@@ -24,6 +29,17 @@ export default function Home() {
       closeModal();
     }
   }
+
+  function routePersistentLogIn() {
+    if (localStorage.getItem("auth-storage") === "true") {
+      authStore.setIsUserAuth(true);
+      router.push("for-you");
+    }
+  }
+
+  useEffect(() => {
+    routePersistentLogIn();
+  }, []);
 
   return (
     <>
