@@ -1,6 +1,5 @@
-
-import SearchBar from '@/app/components/SearchBar'
-import SideBar from '@/app/components/SideBar'
+import SearchBar from '@/app/components/UI/SearchBar'
+import SideBar from '@/app/components/UI/SideBar'
 import React from 'react'
 
 function page() {
@@ -15,5 +14,3 @@ function page() {
     </div>
   )
 }
-
-export default page

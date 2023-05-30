@@ -39,6 +39,7 @@ export default function RecommendedBooks2() {
   useEffect(() => {
     recommendBookQuery();
   }, []);
+
   return (
     <>
       {recommendBook.map((book: any, id: number) => (
@@ -47,7 +48,9 @@ export default function RecommendedBooks2() {
           className="for-you__recommended--books-link"
           href="/book/5bxl50cz4bt"
         >
-          <div className="book__pill">Premium</div>
+          {book.subscriptionRequired && <div className="book__pill" >Premium</div>}
+
+
           <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fhow-to-win-friends-and-influence-people.mp3?alt=media&amp;token=60872755-13fc-43f4-8b75-bae3fcd73991"></audio>
           <figure className="book__image--wrapper">
             <img className="book__image" src={book.imageLink} alt="book" />
@@ -61,7 +64,7 @@ export default function RecommendedBooks2() {
                 <svg
                   stroke="currentColor"
                   fill="currentColor"
-                  stroke-width="0"
+                  strokeWidth="0"
                   viewBox="0 0 24 24"
                   height="1em"
                   width="1em"
@@ -80,7 +83,7 @@ export default function RecommendedBooks2() {
                 <svg
                   stroke="currentColor"
                   fill="currentColor"
-                  stroke-width="0"
+                  strokeWidth="0"
                   viewBox="0 0 1024 1024"
                   height="1em"
                   width="1em"

@@ -1,93 +1,182 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { db } from "../../firebase";
+import { useRouter } from "next/navigation";
+import { doc, setDoc } from "firebase/firestore";
+import { useAuthStore } from "@/app/utilities/authStore";
+import { useEmailStore } from "@/app/utilities/emailStore";
 
 function LogInModal({ closeModal }: { closeModal: any }) {
-  const [logIn, setLogIn] = useState(true);
-  const [signUp, setSignUp] = useState(false);
+  const authStore = useAuthStore();
+  const emailStore = useEmailStore();
+  const router = useRouter();
+  const [logInModal, setLogInModal] = useState(true);
+  const [signUpModal, setSignUpModal] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleEmailSignUp = async () => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user
-    // await createUserProfileDocument(user);
-  }
-
-  // const handleEmailLogIn = async (e: any) => {
-  //   const auth = getAuth();
-  //   createUserWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //       // Signed in
-  //       const user = userCredential.user;
-  //       // ...
-  //     })
-  //     .catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-  //       // ..
-  //     });
-  // };
-
-  const handleGoogle = async (e: any) => {
-    const provider = await new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
+  const emailSignUp = async (e: any) => {
+    try {
+      const auth = getAuth();
+      e.preventDefault();
+      await setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return createUserWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+      const user = auth.currentUser;
+      if (user) {
+        loginAuthSuccess();
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      closeAndRoute();
+    } catch (error) {
+      alert(error);
+    }
   };
 
-  function signUpModal() {
-    if (signUp === false) {
-      setLogIn(false);
-      setSignUp(true);
+  const emailLogIn = async (e: any) => {
+    try {
+      const auth = getAuth();
+      e.preventDefault();
+      await setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+      const user = auth.currentUser;
+      if (user) {
+        loginAuthSuccess();
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      closeAndRoute();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const guestLogIn = async (e: any) => {
+    try {
+      e.preventDefault();
+      const auth = getAuth();
+      const email = "guest123@gmail.com";
+      const password = "guest123";
+      await setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, email, password);
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+      const user = auth.currentUser;
+      if (user) {
+        loginAuthSuccess();
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      closeAndRoute();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const googleLogIn = async (e: any) => {
+    try {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      const user = auth.currentUser;
+      if (user) {
+        loginAuthSuccess();
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+        });
+      }
+      closeAndRoute();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const loginAuthSuccess = () => {
+    const user = getAuth().currentUser;
+    localStorage.setItem("email-storage", user?.email || "");
+    localStorage.setItem("auth-storage", "true");
+    authStore.setIsUserAuth(true);
+    emailStore.setEmail(user?.email || "");
+  };
+
+  function closeAndRoute() {
+    closeModal();
+    router.push("for-you");
+  }
+
+  function swapToLogInModal() {
+    if (logInModal === false) {
+      setSignUpModal(false);
+      setPasswordModal(false);
+      setLogInModal(true);
     } else {
-      setSignUp(false);
-      setLogIn(true);
+      setPasswordModal(false);
+      setLogInModal(false);
+      setSignUpModal(true);
     }
   }
 
-  function logInModal() {
-    if (logIn === false) {
-      setSignUp(false);
-      setPasswordModal(false);
-      setLogIn(true);
+  function swapToSignUpModal() {
+    if (signUpModal === false) {
+      setLogInModal(false);
+      setSignUpModal(true);
     } else {
-      setPasswordModal(false);
-      setLogIn(false);
-      setSignUp(true);
+      setSignUpModal(false);
+      setLogInModal(true);
     }
   }
 
   function swapToPasswordModal() {
     if (passwordModal === false) {
-      setLogIn(false);
-      setSignUp(false);
+      setLogInModal(false);
       setPasswordModal(true);
     } else {
       setPasswordModal(false);
-      setSignUp(false);
-      setLogIn(true);
+      setLogInModal(true);
     }
   }
 
   return (
     <div className="auth">
-      {logIn && (
+      {logInModal && (
         <>
           <div className="auth__content">
             <div className="auth__title">Log in to Summarist</div>
-            <button className="btn guest__btn--wrapper">
+            <button className="btn guest__btn--wrapper" onClick={guestLogIn}>
               <figure className="google__icon--mask guest__icon--mask">
                 <svg
                   stroke="currentColor"
                   fill="currentColor"
-                  stroke-width="0"
+                  strokeWidth="0"
                   viewBox="0 0 448 512"
                   height="1em"
                   width="1em"
@@ -101,7 +190,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
             </div>
-            <button className="btn google__btn--wrapper" onClick={handleGoogle}>
+            <button className="btn google__btn--wrapper" onClick={googleLogIn}>
               <figure className="google__icon--mask">
                 <img
                   alt="google"
@@ -119,18 +208,26 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
             </div>
-            <form className="auth__main--form">
+            <form
+              id="log__in--form"
+              className="auth__main--form"
+              onSubmit={emailLogIn}
+            >
               <input
                 className="auth__main--input"
                 type="text"
                 placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               ></input>
               <input
                 className="auth__main--input"
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               ></input>
-              <button className="btn">
+              <button className="btn" type="submit">
                 <span>Login</span>
               </button>
             </form>
@@ -138,14 +235,14 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           <div className="auth__forgot--password" onClick={swapToPasswordModal}>
             Forgot your password?
           </div>
-          <button className="auth__switch--btn" onClick={logInModal}>
+          <button className="auth__switch--btn" onClick={swapToLogInModal}>
             Don{`'`}t have an account?
           </button>
           <div className="auth__close--btn" onClick={closeModal}>
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="0"
+              strokeWidth="0"
               viewBox="0 0 24 24"
               height="1em"
               width="1em"
@@ -159,11 +256,11 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           </div>
         </>
       )}
-      {signUp && (
+      {signUpModal && (
         <>
           <div className="auth__content">
             <div className="auth__title">Sign up to Summarist</div>
-            <button className="btn google__btn--wrapper">
+            <button className="btn google__btn--wrapper" onClick={googleLogIn}>
               <figure className="google__icon--mask">
                 <img
                   alt="google"
@@ -181,10 +278,14 @@ function LogInModal({ closeModal }: { closeModal: any }) {
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
             </div>
-            <form className="auth__main--form">
+            <form
+              id="sign__up--form"
+              className="auth__main--form"
+              onSubmit={emailSignUp}
+            >
               <input
                 className="auth__main--input"
-                type="text"
+                type="email"
                 placeholder="Email Address"
                 onChange={(e) => setEmail(e.target.value)}
               />{" "}
@@ -194,19 +295,19 @@ function LogInModal({ closeModal }: { closeModal: any }) {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="btn">
+              <button className="btn" type="submit">
                 <span>Sign up</span>
               </button>
             </form>
           </div>
-          <button className="auth__switch--btn" onClick={signUpModal}>
+          <button className="auth__switch--btn" onClick={swapToSignUpModal}>
             Already have an account?
           </button>
           <div className="auth__close--btn" onClick={closeModal}>
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="0"
+              strokeWidth="0"
               viewBox="0 0 24 24"
               height="1em"
               width="1em"
@@ -224,7 +325,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
         <>
           <div className="auth__content">
             <div className="auth__title">Reset your password</div>
-            <form className="auth__main--form">
+            <form id="forgot-password__form" className="auth__main--form">
               <input
                 className="auth__main--input"
                 type="text"
@@ -235,14 +336,14 @@ function LogInModal({ closeModal }: { closeModal: any }) {
               </button>
             </form>
           </div>
-          <button className="auth__switch--btn" onClick={logInModal}>
+          <button className="auth__switch--btn" onClick={swapToLogInModal}>
             Go to login
           </button>
           <div className="auth__close--btn" onClick={closeModal}>
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="0"
+              strokeWidth="0"
               viewBox="0 0 24 24"
               height="1em"
               width="1em"

@@ -1,11 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import SearchBar from "../components/SearchBar";
-import SideBar from "../components/SideBar";
+import SearchBar from "../components/UI/SearchBar";
+import SideBar from "../components/UI/SideBar";
 import RecommendedBooks from "../components/RecomendedBooks";
 import RecommendedBooks2 from "../components/RecomendedBooks2";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 interface SelectedBook {
   id?: string;
@@ -71,7 +72,7 @@ function Page() {
                         <svg
                           stroke="currentColor"
                           fill="currentColor"
-                          stroke-width="0"
+                          strokeWidth="0"
                           viewBox="0 0 16 16"
                           height="1em"
                           width="1em"
