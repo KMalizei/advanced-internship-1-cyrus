@@ -13,9 +13,11 @@ import { db } from "../../firebase";
 import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuthStore } from "@/app/utilities/authStore";
+import { useEmailStore } from "@/app/utilities/emailStore";
 
 function LogInModal({ closeModal }: { closeModal: any }) {
   const authStore = useAuthStore();
+  const emailStore = useEmailStore();
   const router = useRouter();
   const [logInModal, setLogInModal] = useState(true);
   const [signUpModal, setSignUpModal] = useState(false);
@@ -29,7 +31,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
       e.preventDefault();
       await setPersistence(auth, browserLocalPersistence)
         .then(() => {
-          return signInWithEmailAndPassword(auth, email, password);
+          return createUserWithEmailAndPassword(auth, email, password);
         })
         .catch((error) => {
           const errorMessage = error.message;
@@ -101,9 +103,9 @@ function LogInModal({ closeModal }: { closeModal: any }) {
   };
 
   const googleLogIn = async (e: any) => {
-    const auth = getAuth();
-    const provider = await new GoogleAuthProvider();
     try {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       const user = auth.currentUser;
       if (user) {
@@ -123,6 +125,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
     localStorage.setItem("email-storage", user?.email || "");
     localStorage.setItem("auth-storage", "true");
     authStore.setIsUserAuth(true);
+    emailStore.setEmail(user?.email || "");
   };
 
   function closeAndRoute() {
@@ -161,17 +164,6 @@ function LogInModal({ closeModal }: { closeModal: any }) {
       setLogInModal(true);
     }
   }
-
-  function routePersistentLogIn() {
-    if (localStorage.getItem("auth-storage") === "true") {
-      authStore.setIsUserAuth(true);
-      router.push("for-you");
-    }
-  }
-
-  useEffect(() => {
-    routePersistentLogIn();
-  }, []);
 
   return (
     <div className="auth">

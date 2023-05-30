@@ -6,7 +6,6 @@ import { BsStarHalf, BsStarFill } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
 import LogInModal from "./components/UI/LogInModal";
-import { auth } from "./firebase";
 import { useAuthStore } from "./utilities/authStore";
 import { useRouter } from "next/navigation";
 
