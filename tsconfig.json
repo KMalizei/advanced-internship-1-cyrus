@@ -29,6 +29,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/book/[id]",
-    "src/components/UI/SideBar.tsx", "src/app/for-you/page.tsx" ],
+    "src/components/UI/SideBar.tsx",
+    "src/app/for-you/page.tsx"
+  ],
   "exclude": ["node_modules"]
 }
