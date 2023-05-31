@@ -1,6 +1,6 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import RecommendedSkeleton from "./UI/RecommendedSkeleton";
 
 interface RecommendBook {
   id?: string;
@@ -28,17 +28,33 @@ interface RecommendBook {
 
 export default function RecommendedBooks2() {
   const [recommendBook, setRecommendBook] = useState<RecommendBook[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const recommendBookQuery = async () => {
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended"
     );
     setRecommendBook(data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     recommendBookQuery();
   }, []);
+
+  if (isLoading) {
+    return (
+      <>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} >
+            <div className="for-you__recommended--books-link">
+              <RecommendedSkeleton />
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
 
   return (
     <>
@@ -48,9 +64,9 @@ export default function RecommendedBooks2() {
           className="for-you__recommended--books-link"
           href="/book/5bxl50cz4bt"
         >
-          {book.subscriptionRequired && <div className="book__pill" >Premium</div>}
-
-
+          {book.subscriptionRequired && (
+            <div className="book__pill">Premium</div>
+          )}
           <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fhow-to-win-friends-and-influence-people.mp3?alt=media&amp;token=60872755-13fc-43f4-8b75-bae3fcd73991"></audio>
           <figure className="book__image--wrapper">
             <img className="book__image" src={book.imageLink} alt="book" />
