@@ -11,12 +11,12 @@ function SideBar() {
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
 
-  function openModal() {
-    setIsModalOpen(true);
-  }
-
   function closeModal() {
     setIsModalOpen(false);
+  }
+
+  function openModal() {
+    setIsModalOpen(true);
   }
 
   function handleOverlayClick(event: any) {

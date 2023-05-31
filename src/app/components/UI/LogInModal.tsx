@@ -44,7 +44,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeAndRoute();
+      closeModal();
     } catch (error) {
       alert(error);
     }
@@ -69,7 +69,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeAndRoute();
+      closeModal();
     } catch (error) {
       alert(error);
     }
@@ -96,7 +96,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeAndRoute();
+      closeModal();
     } catch (error) {
       alert(error);
     }
@@ -114,7 +114,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeAndRoute();
+      closeModal();
     } catch (error) {
       alert(error);
     }
@@ -127,11 +127,6 @@ function LogInModal({ closeModal }: { closeModal: any }) {
     authStore.setIsUserAuth(true);
     emailStore.setEmail(user?.email || "");
   };
-
-  function closeAndRoute() {
-    closeModal();
-    router.push("for-you");
-  }
 
   function swapToLogInModal() {
     if (logInModal === false) {

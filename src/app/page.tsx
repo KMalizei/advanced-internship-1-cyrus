@@ -8,6 +8,7 @@ import { RiLeafLine } from "react-icons/ri";
 import LogInModal from "./components/UI/LogInModal";
 import { useAuthStore } from "./utilities/authStore";
 import { useRouter } from "next/navigation";
+import { auth } from "./firebase";
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -38,7 +39,7 @@ export default function Home() {
 
   useEffect(() => {
     routePersistentLogIn();
-  }, []);
+  }, [authStore.isUserAuth]);
 
   return (
     <>
