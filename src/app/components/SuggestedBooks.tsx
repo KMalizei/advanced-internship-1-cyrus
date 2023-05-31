@@ -59,11 +59,11 @@ export default function RecommendedBooks() {
 
   return (
     <>
-      {recommendBook.map((book: any, id: number) => (
+      {recommendBook.map((book: any, index) => (
         <a
-          key={id}
+          key={index}
           className="for-you__recommended--books-link"
-          href="/book/5bxl50cz4bt"
+          href={`/book/${book.id}`}
         >
           {book.subscriptionRequired && <div className="book__pill">Premium</div>}
           <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fhow-to-win-friends-and-influence-people.mp3?alt=media&amp;token=60872755-13fc-43f4-8b75-bae3fcd73991"></audio>

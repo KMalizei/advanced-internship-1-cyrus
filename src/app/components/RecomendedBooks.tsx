@@ -34,6 +34,7 @@ export default function RecommendedBooks2() {
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended"
     );
+    console.log(data)
     setRecommendBook(data);
     setIsLoading(false);
   };
@@ -46,7 +47,7 @@ export default function RecommendedBooks2() {
     return (
       <>
         {Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} >
+          <div key={index}>
             <div className="for-you__recommended--books-link">
               <RecommendedSkeleton />
             </div>
@@ -58,11 +59,11 @@ export default function RecommendedBooks2() {
 
   return (
     <>
-      {recommendBook.map((book: any, id: number) => (
+      {recommendBook.map((book: any, index) => (
         <a
-          key={id}
+          key={index}
           className="for-you__recommended--books-link"
-          href="/book/5bxl50cz4bt"
+          href={`/book/${book.id}`}
         >
           {book.subscriptionRequired && (
             <div className="book__pill">Premium</div>

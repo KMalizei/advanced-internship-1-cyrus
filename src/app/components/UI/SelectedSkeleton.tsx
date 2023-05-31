@@ -10,7 +10,7 @@ export default function SelectedSkeleton() {
       <div className="selected__book--line"></div>
       <div className="selected__book--content">
         <figure className="book__image--wrapper">
-          <Skeleton width={172} height={172} />
+          <Skeleton width={172} height={220} />
         </figure>
         <div className="selected__book--text">
           <div className="selected__book--title">

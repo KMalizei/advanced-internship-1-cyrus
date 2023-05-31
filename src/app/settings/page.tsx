@@ -17,11 +17,13 @@ function UserSettings() {
       if (user) {
         const userEmail = user.email;
         setEmail(userEmail);
+      } else {
+        setEmail(null);
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [email]);
 
   function openModal() {
     setIsModalOpen(true);

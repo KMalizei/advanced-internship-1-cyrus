@@ -3,12 +3,11 @@
 import SearchBar from "../components/UI/SearchBar";
 import SideBar from "../components/UI/SideBar";
 import RecommendedBooks from "../components/RecomendedBooks";
-import RecommendedBooks2 from "../components/RecomendedBooks2";
+import SuggestedBooks from "../components/SuggestedBooks";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import SelectedSkeleton from "../components/UI/SelectedSkeleton";
-
 
 interface SelectedBook {
   id?: string;
@@ -34,44 +33,39 @@ interface SelectedBook {
 
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const selectedBookQuery = async () => {
-
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected"
     );
     setSelectedBook(data);
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   useEffect(() => {
     selectedBookQuery();
   }, []);
 
-
-
-  if(isLoading){
+  if (isLoading) {
     return (
       <>
-
-          <div  >
-            <div className="wrapper">
+        <div>
+          <div className="wrapper">
             <SearchBar />
-              <div className="row">
-                <div className="container">
+            <div className="row">
+              <div className="container">
                 <SideBar />
-                  <div className="for-you__wrapper">
+                <div className="for-you__wrapper">
                   <div className="for-you__title">Selected just for you</div>
-                    <div className="selected__book">
-                      <SelectedSkeleton />
-                    </div>
+                  <div className="selected__book">
+                    <SelectedSkeleton />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
+        </div>
       </>
     );
   }
@@ -84,8 +78,12 @@ function Page() {
           <SideBar />
           <div className="for-you__wrapper">
             <div className="for-you__title">Selected just for you</div>
-            {selectedBook.map((book, id) => (
-              <a key={id} href="/for-you" className="selected__book">
+            {selectedBook.map((book, index) => (
+              <a
+                key={index}
+                href={`book/${book.id}`}
+                className="selected__book"
+              >
                 <div className="selected__book--sub-title">{book.subTitle}</div>
                 <div className="selected__book--line"></div>
                 <div className="selected__book--content">
@@ -139,11 +137,11 @@ function Page() {
               <div className="for-you__title">Suggested Books</div>
               <div className="for-you__sub--title">Browse these books</div>
               <div className="for-you__recommended--books">
-                <RecommendedBooks2 />
-                <RecommendedBooks2 />
-                <RecommendedBooks2 />
-                <RecommendedBooks2 />
-                <RecommendedBooks2 />
+                <SuggestedBooks />
+                <SuggestedBooks />
+                <SuggestedBooks />
+                <SuggestedBooks />
+                <SuggestedBooks />
               </div>
             </div>
           </div>
