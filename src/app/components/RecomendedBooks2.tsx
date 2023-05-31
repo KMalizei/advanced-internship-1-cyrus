@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import RecommendedSkeleton from "./UI/RecommendedSkeleton";
 
 interface RecommendBook {
   id?: string;
@@ -28,20 +29,34 @@ interface RecommendBook {
 
 export default function RecommendedBooks() {
   const [recommendBook, setRecommendBook] = useState<RecommendBook[]>([]);
-  const [loading, setLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const recommendBookQuery = async () => {
-    setLoading(true);
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested"
     );
     setRecommendBook(data);
-    setLoading(false);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     recommendBookQuery();
   }, []);
+
+  if (isLoading) {
+    return (
+      <>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} >
+            <div className="for-you__recommended--books-link">
+              <RecommendedSkeleton />
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
+
   return (
     <>
       {recommendBook.map((book: any, id: number) => (

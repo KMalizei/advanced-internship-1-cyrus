@@ -7,6 +7,8 @@ import RecommendedBooks2 from "../components/RecomendedBooks2";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import SelectedSkeleton from "../components/UI/SelectedSkeleton";
+
 
 interface SelectedBook {
   id?: string;
@@ -32,17 +34,47 @@ interface SelectedBook {
 
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const selectedBookQuery = async () => {
+
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected"
     );
     setSelectedBook(data);
+    setIsLoading(false)
   };
 
   useEffect(() => {
     selectedBookQuery();
   }, []);
+
+
+
+  if(isLoading){
+    return (
+      <>
+
+          <div  >
+            <div className="wrapper">
+            <SearchBar />
+              <div className="row">
+                <div className="container">
+                <SideBar />
+                  <div className="for-you__wrapper">
+                  <div className="for-you__title">Selected just for you</div>
+                    <div className="selected__book">
+                      <SelectedSkeleton />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      </>
+    );
+  }
 
   return (
     <div className="wrapper">
