@@ -34,7 +34,6 @@ export default function RecommendedBooks2() {
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended"
     );
-    console.log(data)
     setRecommendBook(data);
     setIsLoading(false);
   };

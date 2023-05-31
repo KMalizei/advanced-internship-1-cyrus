@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 interface Book {
+  id: string;
   author: string;
   title: string;
   subTitle: string;
@@ -15,6 +16,7 @@ interface Book {
   audioLink: string;
   totalRating: number;
   averageRating: number;
+  keyIdeas?: string[];
   type: string;
   status: string;
   subscriptionRequired: boolean;
@@ -22,10 +24,8 @@ interface Book {
   tags: string[];
   bookDescription: string;
   authorDescription: string;
-  id: string;
-  close: () => void;
   duration: number;
-  keyIdeas?: string[];
+  close: () => void;
 }
 
 const Page = () => {
@@ -36,7 +36,6 @@ const Page = () => {
 
   async function fetchBookData(): Promise<void> {
     const { data } = await axios.get(`${API__URL}`);
-    console.log(data);
     setBookInfo(data);
     setIsLoading(false);
   }
@@ -44,7 +43,6 @@ const Page = () => {
   useEffect(() => {
     fetchBookData();
   }, []);
-
 
   return (
     <>
@@ -55,7 +53,10 @@ const Page = () => {
           <div className="container">
             <div className="inner__wrapper">
               <div className="inner__book">
-                <div className="inner-book__title">{bookInfo?.title}</div>
+                <div className="inner-book__title">
+                  {bookInfo?.title}{" "}
+                  {bookInfo?.subscriptionRequired ? "(Premium)" : ""}
+                </div>
                 <div className="inner-book__author">{bookInfo?.author}</div>
                 <div className="inner-book__sub--title">
                   {bookInfo?.subTitle}
@@ -198,7 +199,7 @@ const Page = () => {
                 </div>
                 <div className="inner-book__tags--wrapper">
                   {bookInfo?.tags &&
-                    bookInfo.tags.map((tag:string, index:any) => (
+                    bookInfo.tags.map((tag: string, index: any) => (
                       <div key={index} className="inner-book__tag">
                         {tag}
                       </div>
