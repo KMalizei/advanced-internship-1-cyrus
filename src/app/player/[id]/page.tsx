@@ -27,7 +27,7 @@ interface Book {
   duration: number;
 }
 
-function Page({ title }: { title: string }, { summary }: { summary: string }) {
+function Page() {
   const [book, setBook] = useState<Book | null>(null);
   const params = useParams();
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;

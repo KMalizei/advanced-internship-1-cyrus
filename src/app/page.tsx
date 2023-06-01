@@ -34,7 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     routePersistentLogIn();
-  }, [authStore.isUserAuth]);
+  }, []);
 
   return (
     <>
