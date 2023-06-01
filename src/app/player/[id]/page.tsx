@@ -2,9 +2,10 @@
 "use client";
 import SideBar from "@/app/components/UI/SideBar";
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import SearchBar from "@/app/components/UI/SearchBar";
+import { useAuthStore } from "@/app/utilities/authStore";
 
 interface Book {
   id: string;
@@ -30,12 +31,22 @@ interface Book {
 function Page() {
   const [book, setBook] = useState<Book | null>(null);
   const params = useParams();
+  const authStore = useAuthStore();
+  const router = useRouter();
+  const isUserAuth = authStore?.isUserAuth;
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;
 
   const getBook = async () => {
     const { data } = await axios.get(API__URL);
     setBook(data);
   };
+  console.log(authStore);
+
+  useEffect(() => {
+    if (isUserAuth === false) {
+      router.push("/");
+    }
+  }, [authStore]);
 
   useEffect(() => {
     getBook();

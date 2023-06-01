@@ -14,6 +14,7 @@ export default function Home() {
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const router = useRouter();
+  const isUserAuth = authStore?.isUserAuth;
 
   function openModal() {
     setModalOpen(!isModalOpen);
@@ -26,8 +27,7 @@ export default function Home() {
   }
 
   function routePersistentLogIn() {
-    if (localStorage.getItem("auth-storage") === "true") {
-      authStore.setIsUserAuth(true);
+    if (isUserAuth === true) {
       router.push("for-you");
     }
   }
