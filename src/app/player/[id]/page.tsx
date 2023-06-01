@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import SearchBar from "@/app/components/UI/SearchBar";
 import { useAuthStore } from "@/app/utilities/authStore";
+import LogInModal from "@/app/components/UI/LogInModal";
 
 interface Book {
   id: string;
@@ -30,6 +31,7 @@ interface Book {
 
 function Page() {
   const [book, setBook] = useState<Book | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const params = useParams();
   const authStore = useAuthStore();
   const router = useRouter();
@@ -41,9 +43,13 @@ function Page() {
     setBook(data);
   };
 
+  function openModal() {
+    setIsModalOpen(!isModalOpen);
+  }
+
   useEffect(() => {
     if (isUserAuth === false) {
-      router.push("/");
+      openModal();
     }
   }, [authStore]);
 
@@ -56,11 +62,22 @@ function Page() {
       <SearchBar />
       <SideBar />
       <div className="summary">
+        {isModalOpen ? <LogInModal openModal={openModal} /> : <></>}
         <div className="audio__book--summary" style={{ fontSize: "16px" }}>
           <div className="audio__book--summary-title">
             <b>{book?.title}</b>
           </div>
-          <div className="audio__book--summary-text">{book?.summary}</div>
+          {!isUserAuth ? (
+            <div className="audio__book--summary-text">
+              {book?.summary.slice(0, 500)}
+              <b>
+                {" "}
+                <br /> Please Login To Continue Reading
+              </b>
+            </div>
+          ) : (
+            <div className="audio__book--summary-text">{book?.summary}</div>
+          )}
 
           <div className="audio__wrapper">
             <audio src={book?.audioLink}></audio>

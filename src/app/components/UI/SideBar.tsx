@@ -26,23 +26,34 @@ function SideBar() {
   }
 
   function smallFontSize() {
+    removeFontSize();
     setFontSizes("font1");
     fontSize?.classList.add("font1");
   }
 
   function mediumFontSize() {
+    removeFontSize();
     setFontSizes("font2");
     fontSize?.classList.add("font2");
   }
 
   function largeFontSize() {
+    removeFontSize();
     setFontSizes("font3");
     fontSize?.classList.add("font3");
   }
 
   function xlFontSize() {
+    removeFontSize();
     setFontSizes("font4");
     fontSize?.classList.add("font4");
+  }
+
+  function removeFontSize() {
+    fontSize?.classList.remove("font1");
+    fontSize?.classList.remove("font2");
+    fontSize?.classList.remove("font3");
+    fontSize?.classList.remove("font4");
   }
 
   const logUserOut = () => {

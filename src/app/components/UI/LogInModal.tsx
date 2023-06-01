@@ -28,8 +28,7 @@ function LogInModal({ openModal }: { openModal: any }) {
     try {
       const auth = getAuth();
       e.preventDefault();
-      await setPersistence(auth, browserLocalPersistence);
-      createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       if (user) {
         loginAuthSuccess();
@@ -329,7 +328,9 @@ function LogInModal({ openModal }: { openModal: any }) {
               </button>
             </form>
           </div>
-          <button className="auth__switch--btn">Go to login</button>
+          <button className="auth__switch--btn" onClick={swapToLogInModal}>
+            Go to login
+          </button>
           <div className="auth__close--btn" onClick={openModal}>
             <svg
               stroke="currentColor"

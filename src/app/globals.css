@@ -1208,6 +1208,7 @@ FOR-YOU PAGE
   scroll-snap-type: mandatory;
   scroll-snap-type: x;
   margin-bottom: 32px;
+  flex-wrap: wrap;
 }
 
 .for-you__recommended--books-link {

@@ -127,20 +127,12 @@ function Page() {
               </div>
               <div className="for-you__recommended--books">
                 <RecommendedBooks />
-                <RecommendedBooks />
-                <RecommendedBooks />
-                <RecommendedBooks />
-                <RecommendedBooks />
               </div>
             </div>
             <div>
               <div className="for-you__title">Suggested Books</div>
               <div className="for-you__sub--title">Browse these books</div>
               <div className="for-you__recommended--books">
-                <SuggestedBooks />
-                <SuggestedBooks />
-                <SuggestedBooks />
-                <SuggestedBooks />
                 <SuggestedBooks />
               </div>
             </div>
