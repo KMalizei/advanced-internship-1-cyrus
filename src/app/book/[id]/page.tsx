@@ -3,8 +3,10 @@
 import SearchBar from "@/app/components/UI/SearchBar";
 import SideBar from "@/app/components/UI/SideBar";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import LogInModal from "@/app/components/UI/LogInModal";
+import { useAuthStore } from "../../utilities/authStore";
 
 interface Book {
   id: string;
@@ -25,14 +27,29 @@ interface Book {
   bookDescription: string;
   authorDescription: string;
   duration: number;
-  close: () => void;
 }
 
 const Page = () => {
   const [bookInfo, setBookInfo] = useState<Book | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modal__dimRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const params = useParams();
+  const authStore = useAuthStore();
+  const isUserAuth = authStore.isUserAuth;
+
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;
+
+  const openModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  function handleOverlayClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (event.target === modal__dimRef.current) {
+      openModal();
+    }
+  }
 
   async function fetchBookData(): Promise<void> {
     const { data } = await axios.get(`${API__URL}`);
@@ -40,13 +57,41 @@ const Page = () => {
     setIsLoading(false);
   }
 
+  const premiumBookRouting = () => {
+    if (isUserAuth === false) {
+      openModal();
+    } else if (isUserAuth === true && !bookInfo?.subscriptionRequired) {
+      routeToPlayer();
+    }
+    // else if (isUserAuth === true && bookInfo?.subscriptionRequired) {
+    //   if (userSubscription === true) {
+    //     routeToPlayer();
+    //   } else {
+    //     router.push("/choose-plan");
+    //   }
+    // }
+  };
+
+  const routeToPlayer = () => {
+    router.push(`/player/${bookInfo?.id}`);
+  };
+
   useEffect(() => {
     fetchBookData();
-  }, []);
+  }, [params.id]);
 
   return (
     <>
-      <div className="wrapper">
+      {isModalOpen && (
+        <div
+          className="modal__dim"
+          ref={modal__dimRef}
+          onClick={handleOverlayClick}
+        >
+          <LogInModal openModal={openModal} />
+        </div>
+      )}
+      <div className={`wrapper ${isModalOpen ? "dimmed" : ""}`}>
         <SearchBar />
         <SideBar />
         <div className="row">
@@ -143,7 +188,10 @@ const Page = () => {
                   </div>
                 </div>
                 <div className="inner-book__read--btn-wrapper">
-                  <button className="inner-book__read--btn">
+                  <button
+                    className="inner-book__read--btn"
+                    onClick={premiumBookRouting}
+                  >
                     <div className="inner-book__read--icon">
                       <svg
                         stroke="currentColor"
@@ -159,7 +207,10 @@ const Page = () => {
                     </div>
                     <div className="inner-book__read--text">Read</div>
                   </button>
-                  <button className="inner-book__read--btn">
+                  <button
+                    className="inner-book__read--btn"
+                    onClick={premiumBookRouting}
+                  >
                     <div className="inner-book__read--icon">
                       <svg
                         stroke="currentColor"
@@ -199,7 +250,7 @@ const Page = () => {
                 </div>
                 <div className="inner-book__tags--wrapper">
                   {bookInfo?.tags &&
-                    bookInfo.tags.map((tag: string, index: any) => (
+                    bookInfo.tags.map((tag: string, index: number) => (
                       <div key={index} className="inner-book__tag">
                         {tag}
                       </div>

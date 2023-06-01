@@ -8,7 +8,6 @@ import { RiLeafLine } from "react-icons/ri";
 import LogInModal from "./components/UI/LogInModal";
 import { useAuthStore } from "./utilities/authStore";
 import { useRouter } from "next/navigation";
-import { auth } from "./firebase";
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -17,16 +16,12 @@ export default function Home() {
   const router = useRouter();
 
   function openModal() {
-    setModalOpen(true);
-  }
-
-  function closeModal() {
-    setModalOpen(false);
+    setModalOpen(!isModalOpen);
   }
 
   function handleOverlayClick(event: any) {
     if (event.target === modal__dimRef.current) {
-      closeModal();
+      openModal();
     }
   }
 
@@ -67,7 +62,7 @@ export default function Home() {
             </ul>
           </div>
         </nav>
-        {isModalOpen ? <LogInModal closeModal={closeModal} /> : <></>}
+        {isModalOpen ? <LogInModal openModal={openModal} /> : <></>}
         <section id="landing">
           <div className="container">
             <div className="row">

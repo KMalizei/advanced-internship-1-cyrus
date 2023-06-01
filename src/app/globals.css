@@ -880,6 +880,18 @@ SIDEBAR
 .sidebar__font--size-icon--active {
   border-bottom: 3px solid #2bd97c;
 }
+.font1 {
+  font-size: 12px;
+}
+.font2 {
+  font-size: 16px;
+}
+.font3 {
+  font-size: 20px;
+}
+.font4 {
+  font-size: 24px;
+}
 
 .sidebar--opened {
   transform: translateX(0);
@@ -1540,8 +1552,9 @@ BOOK INFO PAGE
 .summary {
   position: relative;
   width: 100%;
-  overflow-y: auto;
+  overflow: auto;
   height: calc(100vh - 160px);
+  padding-left: 200px;
 }
 .audio__wrapper {
   width: 100%;
@@ -1659,6 +1672,14 @@ BOOK INFO PAGE
   -moz-appearance: none;
   appearance: none;
 }
+.audio__progress {
+  background: linear-gradient(
+    to right,
+    rgb(43, 217, 124) 0%,
+    rgb(109, 120, 125) 0%
+  );
+  --range-progress: 0%;
+}
 .audio__progress--bar::-webkit-slider-thumb {
   border: 6px solid #fff;
   height: 6px;
@@ -1709,6 +1730,7 @@ BOOK INFO PAGE
   }
   .summary {
     height: calc(100vh - 260px);
+    padding-left: 0;
   }
 }
 

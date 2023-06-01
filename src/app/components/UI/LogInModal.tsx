@@ -8,17 +8,16 @@ import {
   signInWithEmailAndPassword,
   setPersistence,
   browserLocalPersistence,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { db } from "../../firebase";
-import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuthStore } from "@/app/utilities/authStore";
 import { useEmailStore } from "@/app/utilities/emailStore";
 
-function LogInModal({ closeModal }: { closeModal: any }) {
+function LogInModal({ openModal }: { openModal: any }) {
   const authStore = useAuthStore();
   const emailStore = useEmailStore();
-  const router = useRouter();
   const [logInModal, setLogInModal] = useState(true);
   const [signUpModal, setSignUpModal] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
@@ -29,14 +28,8 @@ function LogInModal({ closeModal }: { closeModal: any }) {
     try {
       const auth = getAuth();
       e.preventDefault();
-      await setPersistence(auth, browserLocalPersistence)
-        .then(() => {
-          return createUserWithEmailAndPassword(auth, email, password);
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          alert(errorMessage);
-        });
+      await setPersistence(auth, browserLocalPersistence);
+      createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       if (user) {
         loginAuthSuccess();
@@ -44,7 +37,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeModal();
+      openModal();
     } catch (error) {
       alert(error);
     }
@@ -54,14 +47,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
     try {
       const auth = getAuth();
       e.preventDefault();
-      await setPersistence(auth, browserLocalPersistence)
-        .then(() => {
-          return signInWithEmailAndPassword(auth, email, password);
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          alert(errorMessage);
-        });
+      await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       if (user) {
         loginAuthSuccess();
@@ -69,7 +55,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeModal();
+      openModal();
     } catch (error) {
       alert(error);
     }
@@ -81,14 +67,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
       const auth = getAuth();
       const email = "guest123@gmail.com";
       const password = "guest123";
-      await setPersistence(auth, browserLocalPersistence)
-        .then(() => {
-          return signInWithEmailAndPassword(auth, email, password);
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          alert(errorMessage);
-        });
+      await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       if (user) {
         loginAuthSuccess();
@@ -96,7 +75,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeModal();
+      openModal();
     } catch (error) {
       alert(error);
     }
@@ -114,7 +93,20 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           email: user.email,
         });
       }
-      closeModal();
+      openModal();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const sendPasswordReset = async (e: any) => {
+    try {
+      e.preventDefault();
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email).then(() => {
+        alert("Password reset email sent!");
+      });
+      swapToLogInModal();
     } catch (error) {
       alert(error);
     }
@@ -233,7 +225,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           <button className="auth__switch--btn" onClick={swapToLogInModal}>
             Don{`'`}t have an account?
           </button>
-          <div className="auth__close--btn" onClick={closeModal}>
+          <div className="auth__close--btn" onClick={openModal}>
             <svg
               stroke="currentColor"
               fill="none"
@@ -298,7 +290,7 @@ function LogInModal({ closeModal }: { closeModal: any }) {
           <button className="auth__switch--btn" onClick={swapToSignUpModal}>
             Already have an account?
           </button>
-          <div className="auth__close--btn" onClick={closeModal}>
+          <div className="auth__close--btn" onClick={openModal}>
             <svg
               stroke="currentColor"
               fill="none"
@@ -320,21 +312,25 @@ function LogInModal({ closeModal }: { closeModal: any }) {
         <>
           <div className="auth__content">
             <div className="auth__title">Reset your password</div>
-            <form id="forgot-password__form" className="auth__main--form">
+            <form
+              id="forgot-password__form"
+              className="auth__main--form"
+              onSubmit={swapToLogInModal}
+            >
               <input
                 className="auth__main--input"
                 type="text"
                 placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <button className="btn">
+              <button className="btn" onClick={sendPasswordReset}>
                 <span>Send reset password link</span>
               </button>
             </form>
           </div>
-          <button className="auth__switch--btn" onClick={swapToLogInModal}>
-            Go to login
-          </button>
-          <div className="auth__close--btn" onClick={closeModal}>
+          <button className="auth__switch--btn">Go to login</button>
+          <div className="auth__close--btn" onClick={openModal}>
             <svg
               stroke="currentColor"
               fill="none"

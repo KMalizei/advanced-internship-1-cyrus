@@ -26,16 +26,12 @@ function UserSettings() {
   }, [email]);
 
   function openModal() {
-    setIsModalOpen(true);
-  }
-
-  function closeModal() {
-    setIsModalOpen(false);
+    setIsModalOpen(!isModalOpen);
   }
 
   function handleOverlayClick(event: React.MouseEvent<HTMLDivElement>) {
     if (event.target === modal__dimRef.current) {
-      closeModal();
+      openModal();
     }
   }
 
@@ -92,7 +88,7 @@ function UserSettings() {
           ref={modal__dimRef}
           onClick={handleOverlayClick}
         >
-          <LogInModal closeModal={closeModal} />
+          <LogInModal openModal={openModal} />
         </div>
       )}
     </div>

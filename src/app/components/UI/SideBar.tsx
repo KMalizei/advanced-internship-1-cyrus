@@ -1,28 +1,66 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import LogInModal from "./LogInModal";
 import { auth } from "../../firebase";
 import { useAuthStore } from "../../utilities/authStore";
+import { useParams } from "next/navigation";
 
 function SideBar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
-
-  function closeModal() {
-    setIsModalOpen(false);
-  }
+  const params = useParams();
+  const underline1 = document.querySelector(".font1");
+  const underline2 = document.querySelector(".font2");
+  const underline3 = document.querySelector(".font3");
+  const underline4 = document.querySelector(".font4");
+  const fontSize = document.querySelector(".audio__book--summary-text");
 
   function openModal() {
-    setIsModalOpen(true);
+    setIsModalOpen(!isModalOpen);
   }
 
   function handleOverlayClick(event: any) {
     if (event.target === modal__dimRef.current) {
-      closeModal();
+      openModal();
     }
+  }
+
+  function smallFontSize() {
+    resetFontSize();
+    fontSize?.classList.add("font1");
+    underline1?.classList.add("sidebar__font--size-icon--active");
+  }
+
+  function mediumFontSize() {
+    resetFontSize();
+    fontSize?.classList.add("font2");
+    underline2?.classList.add("sidebar__font--size-icon--active");
+  }
+
+  function largeFontSize() {
+    resetFontSize();
+    fontSize?.classList.add("font3");
+    underline3?.classList.add("sidebar__font--size-icon--active");
+  }
+
+  function xlFontSize() {
+    resetFontSize();
+    fontSize?.classList.add("font4");
+    underline4?.classList.add("sidebar__font--size-icon--active");
+  }
+
+  function resetFontSize() {
+    fontSize?.classList.remove("font1");
+    fontSize?.classList.remove("font2");
+    fontSize?.classList.remove("font3");
+    fontSize?.classList.remove("font4");
+    underline1?.classList.remove("sidebar__font--size-icon--active");
+    underline2?.classList.remove("sidebar__font--size-icon--active");
+    underline3?.classList.remove("sidebar__font--size-icon--active");
+    underline4?.classList.remove("sidebar__font--size-icon--active");
   }
 
   const logUserOut = () => {
@@ -34,7 +72,7 @@ function SideBar() {
 
   return (
     <>
-      {isModalOpen ? <LogInModal closeModal={closeModal} /> : <></>}
+      {isModalOpen ? <LogInModal openModal={openModal} /> : <></>}
       <div
         className={`modal__dim ${isModalOpen ? "dimmed" : ""}`}
         ref={modal__dimRef}
@@ -136,6 +174,90 @@ function SideBar() {
               </div>
             </div>
             <div className="sidebar__bottom">
+              {window.location.pathname === `/player/${params.id}` ? (
+                <div className="sidebar__link--wrapper sidebar__font--size-wrapper">
+                  <div
+                    className={`sidebar__link--text sidebar__font--size-icon font1 sidebar__font--size-icon--active`}
+                    onClick={smallFontSize}
+                  >
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 24 24"
+                      className="sidebar__font--size-icon-small"
+                      height="1em"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M11.246 15H4.754l-2 5H.6L7 4h2l6.4 16h-2.154l-2-5zm-.8-2L8 6.885 5.554 13h4.892zM21 12.535V12h2v8h-2v-.535a4 4 0 1 1 0-6.93zM19 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                      </g>
+                    </svg>
+                  </div>
+                  <div
+                    className={`sidebar__link--text sidebar__font--size-icon font2`}
+                    onClick={mediumFontSize}
+                  >
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 24 24"
+                      className="sidebar__font--size-icon-medium"
+                      height="1em"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M11.246 15H4.754l-2 5H.6L7 4h2l6.4 16h-2.154l-2-5zm-.8-2L8 6.885 5.554 13h4.892zM21 12.535V12h2v8h-2v-.535a4 4 0 1 1 0-6.93zM19 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                      </g>
+                    </svg>
+                  </div>
+                  <div
+                    className={`sidebar__link--text sidebar__font--size-icon font3`}
+                    onClick={largeFontSize}
+                  >
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 24 24"
+                      className="sidebar__font--size-icon-large"
+                      height="1em"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M11.246 15H4.754l-2 5H.6L7 4h2l6.4 16h-2.154l-2-5zm-.8-2L8 6.885 5.554 13h4.892zM21 12.535V12h2v8h-2v-.535a4 4 0 1 1 0-6.93zM19 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                      </g>
+                    </svg>
+                  </div>
+                  <div
+                    className={`sidebar__link--text sidebar__font--size-icon font4`}
+                    onClick={xlFontSize}
+                  >
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 24 24"
+                      className="sidebar__font--size-icon-xlarge"
+                      height="1em"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M11.246 15H4.754l-2 5H.6L7 4h2l6.4 16h-2.154l-2-5zm-.8-2L8 6.885 5.554 13h4.892zM21 12.535V12h2v8h-2v-.535a4 4 0 1 1 0-6.93zM19 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
               <a className="sidebar__link--wrapper" href="/settings">
                 <div
                   className={`sidebar__link--line ${
