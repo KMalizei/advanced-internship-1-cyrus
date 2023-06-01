@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import LogInModal from "./LogInModal";
 import { auth } from "../../firebase";
 import { useAuthStore } from "../../utilities/authStore";
@@ -8,14 +8,11 @@ import { useParams } from "next/navigation";
 
 function SideBar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fontSizes, setFontSizes] = useState("font1");
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
   const params = useParams();
-  const underline1 = document.querySelector(".font1");
-  const underline2 = document.querySelector(".font2");
-  const underline3 = document.querySelector(".font3");
-  const underline4 = document.querySelector(".font4");
   const fontSize = document.querySelector(".audio__book--summary-text");
 
   function openModal() {
@@ -29,38 +26,23 @@ function SideBar() {
   }
 
   function smallFontSize() {
-    resetFontSize();
+    setFontSizes("font1");
     fontSize?.classList.add("font1");
-    underline1?.classList.add("sidebar__font--size-icon--active");
   }
 
   function mediumFontSize() {
-    resetFontSize();
+    setFontSizes("font2");
     fontSize?.classList.add("font2");
-    underline2?.classList.add("sidebar__font--size-icon--active");
   }
 
   function largeFontSize() {
-    resetFontSize();
+    setFontSizes("font3");
     fontSize?.classList.add("font3");
-    underline3?.classList.add("sidebar__font--size-icon--active");
   }
 
   function xlFontSize() {
-    resetFontSize();
+    setFontSizes("font4");
     fontSize?.classList.add("font4");
-    underline4?.classList.add("sidebar__font--size-icon--active");
-  }
-
-  function resetFontSize() {
-    fontSize?.classList.remove("font1");
-    fontSize?.classList.remove("font2");
-    fontSize?.classList.remove("font3");
-    fontSize?.classList.remove("font4");
-    underline1?.classList.remove("sidebar__font--size-icon--active");
-    underline2?.classList.remove("sidebar__font--size-icon--active");
-    underline3?.classList.remove("sidebar__font--size-icon--active");
-    underline4?.classList.remove("sidebar__font--size-icon--active");
   }
 
   const logUserOut = () => {
@@ -177,7 +159,11 @@ function SideBar() {
               {window.location.pathname === `/player/${params.id}` ? (
                 <div className="sidebar__link--wrapper sidebar__font--size-wrapper">
                   <div
-                    className={`sidebar__link--text sidebar__font--size-icon font1 sidebar__font--size-icon--active`}
+                    className={`sidebar__link--text sidebar__font--size-icon font1 ${
+                      fontSizes === "font1"
+                        ? "sidebar__font--size-icon--active"
+                        : ""
+                    }`}
                     onClick={smallFontSize}
                   >
                     <svg
@@ -197,7 +183,11 @@ function SideBar() {
                     </svg>
                   </div>
                   <div
-                    className={`sidebar__link--text sidebar__font--size-icon font2`}
+                    className={`sidebar__link--text sidebar__font--size-icon font2 ${
+                      fontSizes === "font2"
+                        ? "sidebar__font--size-icon--active"
+                        : ""
+                    }`}
                     onClick={mediumFontSize}
                   >
                     <svg
@@ -217,7 +207,11 @@ function SideBar() {
                     </svg>
                   </div>
                   <div
-                    className={`sidebar__link--text sidebar__font--size-icon font3`}
+                    className={`sidebar__link--text sidebar__font--size-icon font3 ${
+                      fontSizes === "font3"
+                        ? "sidebar__font--size-icon--active"
+                        : ""
+                    }`}
                     onClick={largeFontSize}
                   >
                     <svg
@@ -237,7 +231,11 @@ function SideBar() {
                     </svg>
                   </div>
                   <div
-                    className={`sidebar__link--text sidebar__font--size-icon font4`}
+                    className={`sidebar__link--text sidebar__font--size-icon font4 ${
+                      fontSizes === "font4"
+                        ? "sidebar__font--size-icon--active"
+                        : ""
+                    }`}
                     onClick={xlFontSize}
                   >
                     <svg
