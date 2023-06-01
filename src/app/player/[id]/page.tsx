@@ -40,7 +40,6 @@ function Page() {
     const { data } = await axios.get(API__URL);
     setBook(data);
   };
-  console.log(authStore);
 
   useEffect(() => {
     if (isUserAuth === false) {
