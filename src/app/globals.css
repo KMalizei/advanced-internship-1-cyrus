@@ -858,24 +858,22 @@ SIDEBAR
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
 }
 .sidebar__font--size-icon-small {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
 }
 .sidebar__font--size-icon-medium {
-  width: 24px;
-  height: 24px;
-}
-.sidebar__font--size-icon-large {
-  width: 28px;
-  height: 28px;
-}
-.sidebar__font--size-icon-xlarge {
   width: 32px;
   height: 32px;
+}
+.sidebar__font--size-icon-large {
+  width: 36px;
+  height: 36px;
+}
+.sidebar__font--size-icon-xlarge {
+  width: 40px;
+  height: 40px;
 }
 .sidebar__font--size-icon--active {
   border-bottom: 3px solid #2bd97c;
@@ -891,6 +889,9 @@ SIDEBAR
 }
 .font4 {
   font-size: 24px;
+}
+.rotate-90 {
+  transform: rotate(90deg);
 }
 
 .sidebar--opened {

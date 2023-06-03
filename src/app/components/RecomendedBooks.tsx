@@ -109,14 +109,13 @@ export default function RecommendedBooks({
                     onLoadedMetadata={onLoadedMetadata}
                     className="no__display"
                   />
-                  
-                        <div
-                          className="recommended__book--details-text"
-                          key={book.id}
-                        >
-                          {formatTime(duration)}
-                        </div>
-                      
+
+                  <div
+                    className="recommended__book--details-text"
+                    key={book.id}
+                  >
+                    {formatTime(duration)}
+                  </div>
                 </div>
                 <div className="recommended__book--details">
                   <div className="recommended__book--details-icon">

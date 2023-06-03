@@ -98,7 +98,7 @@ function Page() {
                     <figure className="book__image--wrapper">
                       <img
                         className=" book__image"
-                        src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Fimages%2Fthe-lean-startup.png?alt=media&token=087bb342-71d9-4c07-8b0d-4dd1f06a5aa2"
+                        src={book.imageLink}
                         alt="book"
                       />
                     </figure>
@@ -113,19 +113,15 @@ function Page() {
                         </div>
                         {book?.audioLink && (
                           <>
-                            {selectedBook.map((book: any) => (
-                              <>
-                                <audio
-                                  src={book?.audioLink}
-                                  ref={audioRef}
-                                  onLoadedMetadata={onLoadedMetadata}
-                                  className="no__display"
-                                />
-                                <div className="selected__book--duration">
-                                  {formatTime(duration)}
-                                </div>
-                              </>
-                            ))}
+                            <audio
+                              src={book?.audioLink}
+                              ref={audioRef}
+                              onLoadedMetadata={onLoadedMetadata}
+                              className="no__display"
+                            />
+                            <div className="selected__book--duration">
+                              {formatTime(duration)}
+                            </div>
                           </>
                         )}
                       </div>
