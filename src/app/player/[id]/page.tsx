@@ -8,6 +8,7 @@ import SearchBar from "@/app/components/SearchBar";
 import { useAuthStore } from "@/app/utilities/authStore";
 import LogInModal from "@/app/components/UI/LogInModal";
 import AudioPlayer from "@/app/components/UI/AudioPlayer";
+import PlayerSkeleton from "@/app/components/UI/PlayerSkeleton";
 
 interface Book {
   id: string;
@@ -33,6 +34,7 @@ interface Book {
 function Page() {
   const [book, setBook] = useState<Book | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const modal__dimRef = useRef<HTMLDivElement>(null);
   const params = useParams();
   const authStore = useAuthStore();
@@ -43,6 +45,7 @@ function Page() {
   const getBook = async () => {
     const { data } = await axios.get(API__URL);
     setBook(data);
+    setIsLoading(false);
   };
 
   function openModal() {
@@ -67,8 +70,14 @@ function Page() {
 
   return (
     <>
-      <SearchBar />
       <SideBar />
+      <SearchBar />
+      {isLoading && (
+        <>
+          <PlayerSkeleton />
+        </>
+      )}
+      ;
       <div
         className={`modal__dim ${isModalOpen ? "dimmed" : ""}`}
         ref={modal__dimRef}

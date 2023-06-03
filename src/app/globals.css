@@ -1145,6 +1145,7 @@ FOR-YOU PAGE
   background-color: #fff;
   border: 1px solid #e1e7ea;
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.14);
+  z-index: 100;
 }
 
 .search__book--link {
@@ -1611,6 +1612,12 @@ BOOK INFO PAGE
   white-space: pre-line;
   line-height: 1.4;
   color: #032b41;
+}
+.audio__book--spinner svg {
+  width: 64px;
+  height: 64px;
+  color: #032b41;
+  animation: spin 1s linear infinite;
 }
 .audio__track--wrapper {
   display: flex;
