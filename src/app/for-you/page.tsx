@@ -111,15 +111,23 @@ function Page() {
                         <div className="selected__book--icon">
                           <AiFillPlayCircle />
                         </div>
-                        <audio
-                          src={book?.audioLink}
-                          ref={audioRef}
-                          onLoadedMetadata={onLoadedMetadata}
-                          className="no__display"
-                        />
-                        <div className="selected__book--duration">
-                          {formatTime(duration)}
-                        </div>
+                        {book?.audioLink && (
+                          <>
+                            {selectedBook.map((book: any) => (
+                              <>
+                                <audio
+                                  src={book?.audioLink}
+                                  ref={audioRef}
+                                  onLoadedMetadata={onLoadedMetadata}
+                                  className="no__display"
+                                />
+                                <div className="selected__book--duration">
+                                  {formatTime(duration)}
+                                </div>
+                              </>
+                            ))}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -132,7 +140,7 @@ function Page() {
                   We think you{`'`}ll like these
                 </div>
                 <div className="for-you__recommended--books">
-                  <RecommendedBooks />
+                  <RecommendedBooks {...{ duration, audioRef, setDuration }} />
                 </div>
               </div>
               <div>

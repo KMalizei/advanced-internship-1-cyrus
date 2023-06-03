@@ -24,16 +24,21 @@ interface RecommendBook {
   onClick?: () => void;
   handleBookClick?: (id: string) => void;
   recommendedBookQuery?: () => void;
-  duration: any;
+}
+
+interface audioDuration {
+  duration: number | undefined;
   audioRef: MutableRefObject<any | undefined>;
   setDuration: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function RecommendedBooks() {
+export default function RecommendedBooks({
+  duration,
+  audioRef,
+  setDuration,
+}: audioDuration) {
   const [recommendBook, setRecommendBook] = useState<RecommendBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [duration, setDuration] = useState(0);
-  const audioRef = useRef<any | undefined>();
 
   const recommendBookQuery = async () => {
     const { data } = await axios.get(
@@ -47,7 +52,7 @@ export default function RecommendedBooks() {
     recommendBookQuery();
   }, []);
 
-  const formatTime = (duration: number) => {
+  const formatTime = (duration: number | undefined) => {
     if (duration && !isNaN(duration)) {
       const minutes = Math.floor(duration / 60);
       const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
@@ -104,9 +109,14 @@ export default function RecommendedBooks() {
                     onLoadedMetadata={onLoadedMetadata}
                     className="no__display"
                   />
-                  <div className="recommended__book--details-text">
-                    {formatTime(duration)}
-                  </div>
+                  
+                        <div
+                          className="recommended__book--details-text"
+                          key={book.id}
+                        >
+                          {formatTime(duration)}
+                        </div>
+                      
                 </div>
                 <div className="recommended__book--details">
                   <div className="recommended__book--details-icon">
