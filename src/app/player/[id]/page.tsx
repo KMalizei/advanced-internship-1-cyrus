@@ -96,9 +96,9 @@ function Page() {
               <div className="audio__book--summary-text">{book?.summary}</div>
             )}
             <>
-            <div className="audio__wrapper">
-              <AudioPlayer book={book} />
-            </div>
+              <div className="audio__wrapper">
+                <AudioPlayer book={book} />
+              </div>
             </>
           </div>
         </div>

@@ -3,7 +3,7 @@
 import SearchBar from "@/app/components/SearchBar";
 import SideBar from "@/app/components/SideBar";
 import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, MutableRefObject } from "react";
 import { useParams, useRouter } from "next/navigation";
 import LogInModal from "@/app/components/UI/LogInModal";
 import { useAuthStore } from "../../utilities/authStore";
@@ -26,16 +26,20 @@ interface Book {
   tags: string[];
   bookDescription: string;
   authorDescription: string;
-  duration: number;
+  duration: any;
+  audioRef: MutableRefObject<any | undefined>;
+  setDuration: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Page = () => {
-  const [bookInfo, setBookInfo] = useState<Book | null>(null);
+  const [book, setBook] = useState<Book | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [duration, setDuration] = useState(0);
   const modal__dimRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const params = useParams();
+  const audioRef = useRef<any | undefined>();
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
 
@@ -53,17 +57,17 @@ const Page = () => {
 
   async function fetchBookData(): Promise<void> {
     const { data } = await axios.get(`${API__URL}`);
-    setBookInfo(data);
+    setBook(data);
     setIsLoading(false);
   }
 
   const premiumBookRouting = () => {
     if (isUserAuth === false) {
       openModal();
-    } else if (isUserAuth === true && !bookInfo?.subscriptionRequired) {
+    } else if (isUserAuth === true && !book?.subscriptionRequired) {
       routeToPlayer();
     }
-    // else if (isUserAuth === true && bookInfo?.subscriptionRequired) {
+    // else if (isUserAuth === true && book?.subscriptionRequired) {
     //   if (userSubscription === true) {
     //     routeToPlayer();
     //   } else {
@@ -73,12 +77,28 @@ const Page = () => {
   };
 
   const routeToPlayer = () => {
-    router.push(`/player/${bookInfo?.id}`);
+    router.push(`/player/${book?.id}`);
   };
 
   useEffect(() => {
     fetchBookData();
   }, [params.id]);
+
+  const formatTime = (duration: number) => {
+    if (duration && !isNaN(duration)) {
+      const minutes = Math.floor(duration / 60);
+      const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+      const seconds = Math.floor(duration % 60);
+      const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+      return `${formatMinutes}:${formatSeconds}`;
+    }
+    return "00:00";
+  };
+
+  const onLoadedMetadata = () => {
+    const seconds = audioRef.current.duration;
+    setDuration(seconds);
+  };
 
   return (
     <>
@@ -99,13 +119,10 @@ const Page = () => {
             <div className="inner__wrapper">
               <div className="inner__book">
                 <div className="inner-book__title">
-                  {bookInfo?.title}{" "}
-                  {bookInfo?.subscriptionRequired ? "(Premium)" : ""}
+                  {book?.title} {book?.subscriptionRequired ? "(Premium)" : ""}
                 </div>
-                <div className="inner-book__author">{bookInfo?.author}</div>
-                <div className="inner-book__sub--title">
-                  {bookInfo?.subTitle}
-                </div>
+                <div className="inner-book__author">{book?.author}</div>
+                <div className="inner-book__sub--title">{book?.subTitle}</div>
                 <div className="inner-book__wrapper">
                   <div className="inner-book__description--wrapper">
                     <div className="inner-book__description">
@@ -123,10 +140,10 @@ const Page = () => {
                         </svg>
                       </div>
                       <div className="inner-book__overall--rating">
-                        {bookInfo?.averageRating}&nbsp;
+                        {book?.averageRating}&nbsp;
                       </div>
                       <div className="inner-book__total--rating">
-                        ({bookInfo?.totalRating}&nbsp;ratings)
+                        ({book?.totalRating}&nbsp;ratings)
                       </div>
                     </div>
                     <div className="inner-book__description">
@@ -144,7 +161,15 @@ const Page = () => {
                           <path d="M686.7 638.6L544.1 535.5V288c0-4.4-3.6-8-8-8H488c-4.4 0-8 3.6-8 8v275.4c0 2.6 1.2 5 3.3 6.5l165.4 120.6c3.6 2.6 8.6 1.8 11.2-1.7l28.6-39c2.6-3.7 1.8-8.7-1.8-11.2z"></path>
                         </svg>
                       </div>
-                      <div className="inner-book__duration">03:24</div>
+                      <audio
+                        src={book?.audioLink}
+                        ref={audioRef}
+                        onLoadedMetadata={onLoadedMetadata}
+                        className="no__display"
+                      />
+                      <div className="inner-book__duration">
+                        {formatTime(duration)}
+                      </div>
                     </div>
                     <div className="inner-book__description">
                       <div className="inner-book__icon">
@@ -160,7 +185,7 @@ const Page = () => {
                           <path d="M842 454c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8 0 140.3-113.7 254-254 254S258 594.3 258 454c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8 0 168.7 126.6 307.9 290 327.6V884H326.7c-13.7 0-24.7 14.3-24.7 32v36c0 4.4 2.8 8 6.2 8h407.6c3.4 0 6.2-3.6 6.2-8v-36c0-17.7-11-32-24.7-32H548V782.1c165.3-18 294-158 294-328.1zM512 624c93.9 0 170-75.2 170-168V232c0-92.8-76.1-168-170-168s-170 75.2-170 168v224c0 92.8 76.1 168 170 168zm-94-392c0-50.6 41.9-92 94-92s94 41.4 94 92v224c0 50.6-41.9 92-94 92s-94-41.4-94-92V232z"></path>
                         </svg>
                       </div>
-                      <div className="inner-book__type">{bookInfo?.type}</div>
+                      <div className="inner-book__type">{book?.type}</div>
                     </div>
                     <div className="inner-book__description">
                       <div className="inner-book__icon">
@@ -182,7 +207,7 @@ const Page = () => {
                         </svg>
                       </div>
                       <div className="inner-book__key--ideas">
-                        {bookInfo?.keyIdeas} Key ideas
+                        {book?.keyIdeas} Key ideas
                       </div>
                     </div>
                   </div>
@@ -249,21 +274,21 @@ const Page = () => {
                   What{"'"}s it about?
                 </div>
                 <div className="inner-book__tags--wrapper">
-                  {bookInfo?.tags &&
-                    bookInfo.tags.map((tag: string, index: number) => (
+                  {book?.tags &&
+                    book.tags.map((tag: string, index: number) => (
                       <div key={index} className="inner-book__tag">
                         {tag}
                       </div>
                     ))}
                 </div>
                 <div className="inner-book__book--description">
-                  {bookInfo?.bookDescription}
+                  {book?.bookDescription}
                 </div>
                 <h2 className="inner-book__secondary--title">
                   About the author
                 </h2>
                 <div className="inner-book__author--description">
-                  {bookInfo?.authorDescription}
+                  {book?.authorDescription}
                 </div>
               </div>
               <div className="inner-book--img-wrapper">
@@ -271,7 +296,7 @@ const Page = () => {
                   <img
                     className="book__image"
                     style={{ display: "block" }}
-                    src={bookInfo?.imageLink}
+                    src={book?.imageLink}
                     alt="book"
                   />
                 </figure>

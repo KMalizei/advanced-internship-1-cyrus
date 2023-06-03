@@ -5,8 +5,9 @@ import SideBar from "../components/SideBar";
 import RecommendedBooks from "../components/RecomendedBooks";
 import SuggestedBooks from "../components/SuggestedBooks";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, MutableRefObject, useRef } from "react";
 import SelectedSkeleton from "../components/UI/SelectedSkeleton";
+import { AiFillPlayCircle } from "react-icons/ai";
 
 interface SelectedBook {
   id?: string;
@@ -28,11 +29,16 @@ interface SelectedBook {
   selectedBookQuery?: () => void;
   onClick?: () => void;
   handleBookClick: (id: string) => void;
+  duration: any;
+  audioRef: MutableRefObject<any | undefined>;
+  setDuration: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<any | undefined>();
 
   const selectedBookQuery = async () => {
     const { data } = await axios.get(
@@ -46,28 +52,21 @@ function Page() {
     selectedBookQuery();
   }, []);
 
-  if (isLoading) {
-    return (
-      <>
-        <div>
-          <div className="wrapper">
-            <SearchBar />
-            <div className="row">
-              <div className="container">
-                <SideBar />
-                <div className="for-you__wrapper">
-                  <div className="for-you__title">Selected just for you</div>
-                  <div className="selected__book">
-                    <SelectedSkeleton />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
+  const formatTime = (duration: number) => {
+    if (duration && !isNaN(duration)) {
+      const minutes = Math.floor(duration / 60);
+      const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+      const seconds = Math.floor(duration % 60);
+      const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+      return `${formatMinutes}:${formatSeconds}`;
+    }
+    return "00:00";
+  };
+
+  const onLoadedMetadata = () => {
+    const seconds = audioRef.current.duration;
+    setDuration(seconds);
+  };
 
   return (
     <div className="wrapper">
@@ -75,68 +74,77 @@ function Page() {
       <div className="row">
         <div className="container">
           <SideBar />
-          <div className="for-you__wrapper">
-            <div className="for-you__title">Selected just for you</div>
-            {selectedBook.map((book, index) => (
-              <a
-                key={index}
-                href={`book/${book.id}`}
-                className="selected__book"
-              >
-                <div className="selected__book--sub-title">{book.subTitle}</div>
-                <div className="selected__book--line"></div>
-                <div className="selected__book--content">
-                  <figure className="book__image--wrapper">
-                    <img
-                      className=" book__image"
-                      src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Fimages%2Fthe-lean-startup.png?alt=media&token=087bb342-71d9-4c07-8b0d-4dd1f06a5aa2"
-                      alt="book"
-                    />
-                  </figure>
-                  <div className="selected__book--text">
-                    <div className="selected__book--title">{book.title}</div>
-                    <div className="selected__book--author">{book.author}</div>
-                    <div className="selected__book--duration-wrapper">
-                      <div className="selected__book--icon">
-                        <svg
-                          stroke="currentColor"
-                          fill="currentColor"
-                          strokeWidth="0"
-                          viewBox="0 0 16 16"
-                          height="1em"
-                          width="1em"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"></path>
-                        </svg>
+          {isLoading ? (
+            <div className="for-you__wrapper">
+              <div className="for-you__title">Selected just for you</div>
+              <div className="selected__book">
+                <SelectedSkeleton />
+              </div>
+            </div>
+          ) : (
+            <div className="for-you__wrapper">
+              <div className="for-you__title">Selected just for you</div>
+              {selectedBook.map((book, index) => (
+                <a
+                  key={index}
+                  href={`book/${book.id}`}
+                  className="selected__book"
+                >
+                  <div className="selected__book--sub-title">
+                    {book.subTitle}
+                  </div>
+                  <div className="selected__book--line"></div>
+                  <div className="selected__book--content">
+                    <figure className="book__image--wrapper">
+                      <img
+                        className=" book__image"
+                        src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Fimages%2Fthe-lean-startup.png?alt=media&token=087bb342-71d9-4c07-8b0d-4dd1f06a5aa2"
+                        alt="book"
+                      />
+                    </figure>
+                    <div className="selected__book--text">
+                      <div className="selected__book--title">{book.title}</div>
+                      <div className="selected__book--author">
+                        {book.author}
                       </div>
-                      <div className="selected__book--duration">
-                        3 mins <br /> 23 secs
+                      <div className="selected__book--duration-wrapper">
+                        <div className="selected__book--icon">
+                          <AiFillPlayCircle />
+                        </div>
+                        <audio
+                          src={book?.audioLink}
+                          ref={audioRef}
+                          onLoadedMetadata={onLoadedMetadata}
+                          className="no__display"
+                        />
+                        <div className="selected__book--duration">
+                          {formatTime(duration)}
+                        </div>
                       </div>
                     </div>
                   </div>
+                </a>
+              ))}
+
+              <div>
+                <div className="for-you__title">Recommended For You</div>
+                <div className="for-you__sub--title">
+                  We think you{`'`}ll like these
                 </div>
-              </a>
-            ))}
-
-            <div>
-              <div className="for-you__title">Recommended For You</div>
-              <div className="for-you__sub--title">
-                We think you{`'`}ll like these
+                <div className="for-you__recommended--books">
+                  <RecommendedBooks />
+                </div>
               </div>
-              <div className="for-you__recommended--books">
-                <RecommendedBooks />
+              <div>
+                <div className="for-you__title">Suggested Books</div>
+                <div className="for-you__sub--title">Browse these books</div>
+
+                <div className="for-you__recommended--books">
+                  <SuggestedBooks />
+                </div>
               </div>
             </div>
-            <div>
-              <div className="for-you__title">Suggested Books</div>
-              <div className="for-you__sub--title">Browse these books</div>
-
-              <div className="for-you__recommended--books">
-                <SuggestedBooks />
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

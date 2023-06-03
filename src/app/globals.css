@@ -1015,7 +1015,7 @@ FOR-YOU PAGE
   justify-content: center;
   border-radius: 50%;
   align-items: center;
-  padding: 4px 4px 4px 6px;
+  /* padding: 4px 4px 4px 6px; */
 }
 
 @media (max-width: 1200px) {
@@ -1572,6 +1572,9 @@ BOOK INFO PAGE
   overflow: auto;
   height: calc(100vh - 160px);
   padding-left: 200px;
+}
+.no__display {
+  display: none;
 }
 .audio__wrapper {
   width: 100%;
