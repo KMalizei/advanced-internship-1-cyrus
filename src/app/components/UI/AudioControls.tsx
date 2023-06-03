@@ -24,7 +24,7 @@ const AudioControls = ({
   const playAnimationRef = useRef<number | undefined>();
 
   const repeat = useCallback(() => {
-    const currentTime = audioRef.current.currentTime;
+    const currentTime: number = audioRef?.current?.currentTime;
     setTimeProgress(currentTime);
     progressBarRef.current.value = currentTime;
     progressBarRef.current.style.setProperty(
@@ -47,6 +47,16 @@ const AudioControls = ({
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
   };
+
+  useEffect(() => {
+    const endOfAudio = () => {
+      setIsPlaying(false);
+      setTimeProgress(0);
+      progressBarRef.current.value = 0;
+      progressBarRef.current.style.setProperty("--range-progress", `0%`);
+    };
+    audioRef.current.addEventListener("ended", endOfAudio);
+  }, [audioRef, progressBarRef, setTimeProgress]);
 
   const skipBackward = () => {
     audioRef.current.currentTime -= 5;

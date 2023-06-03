@@ -90,7 +90,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchBookData();
-  }, [params.id]);
+  });
 
   const formatTime = (duration: number) => {
     if (duration && !isNaN(duration)) {

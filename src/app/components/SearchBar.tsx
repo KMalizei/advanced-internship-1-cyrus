@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { AiOutlineSearch, AiOutlineStar } from "react-icons/ai";

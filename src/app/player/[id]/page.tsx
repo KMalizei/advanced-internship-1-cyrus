@@ -9,6 +9,7 @@ import { useAuthStore } from "@/app/utilities/authStore";
 import LogInModal from "@/app/components/UI/LogInModal";
 import AudioPlayer from "@/app/components/UI/AudioPlayer";
 import PlayerSkeleton from "@/app/components/UI/PlayerSkeleton";
+import { auth } from "@/app/firebase";
 
 interface Book {
   id: string;
@@ -62,11 +63,11 @@ function Page() {
     if (isUserAuth === false) {
       openModal();
     }
-  }, [authStore]);
+  });
 
   useEffect(() => {
     getBook();
-  }, []);
+  });
 
   return (
     <>

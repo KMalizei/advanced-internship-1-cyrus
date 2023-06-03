@@ -449,6 +449,7 @@ FEATURES
 }
 
 .statistics__content--header-second {
+  text-align: end;
   align-items: flex-end;
 }
 
@@ -1892,7 +1893,8 @@ MEDIA STYLES
   }
 
   .statistics__content--header-second {
-    align-items: flex-start;
+    text-align: end;
+    align-items: flex-end;
   }
 
   .statistics__data--title {

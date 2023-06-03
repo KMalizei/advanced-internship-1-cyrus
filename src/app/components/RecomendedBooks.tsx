@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import RecommendedSkeleton from "./UI/RecommendedSkeleton";
