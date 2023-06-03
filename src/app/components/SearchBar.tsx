@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { AiOutlineSearch, AiOutlineStar } from "react-icons/ai";
 
@@ -27,6 +27,7 @@ interface Book {
 export default function SearchBar() {
   const [showBooksWrapper, setShowBooksWrapper] = useState(false);
   const [searchResults, setSearchResults] = useState<Book[]>([]);
+  const search__backgroundRef = useRef<HTMLDivElement>(null);
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -35,10 +36,10 @@ export default function SearchBar() {
     if (inputValue.length > 0) {
       setShowBooksWrapper(true);
       try {
-        const response = await axios.get<Book[]>(
+        const { data } = await axios.get<Book[]>(
           `https://us-central1-summaristt.cloudfunctions.net/getBooksByAuthorOrTitle?search=${inputValue}`
         );
-        setSearchResults(response.data);
+        setSearchResults(data);
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
@@ -48,8 +49,25 @@ export default function SearchBar() {
     }
   };
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        search__backgroundRef.current &&
+        !search__backgroundRef.current.contains(event.target as Node)
+      ) {
+        setShowBooksWrapper(false);
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="search__background">
+    <div className="search__background" ref={search__backgroundRef}>
       <div className="search__wrapper">
         <figure>
           <img src="logo" alt="" />
