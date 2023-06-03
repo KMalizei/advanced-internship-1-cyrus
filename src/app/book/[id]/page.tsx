@@ -7,6 +7,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import LogInModal from "@/app/components/UI/LogInModal";
 import { useAuthStore } from "../../utilities/authStore";
+import BookSkeleton from "@/app/components/UI/BookSkeleton";
 
 interface Book {
   id: string;
@@ -79,6 +80,23 @@ const Page = () => {
   useEffect(() => {
     fetchBookData();
   }, [params.id]);
+
+  if(isLoading) {
+    return (
+      <>
+        <div className="wrapper">
+        <SearchBar />
+          <div className="row">
+            <div className="container">
+            <SideBar />
+              <BookSkeleton />
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
 
   return (
     <>
