@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import SearchBar from "../components/UI/SearchBar";
-import SideBar from "../components/UI/SideBar";
+import SearchBar from "../components/SearchBar";
+import SideBar from "../components/SideBar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import LogInModal from "../components/UI/LogInModal";
 

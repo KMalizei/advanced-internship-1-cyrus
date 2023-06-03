@@ -990,6 +990,7 @@ FOR-YOU PAGE
   font-size: 14px;
   font-weight: 500;
   color: #032b41;
+  text-align: center;
 }
 
 .selected__book--line {
@@ -1351,6 +1352,21 @@ audio:not([controls]) {
   overflow: hidden;
 }
 
+.log-in__player--text {
+  cursor: pointer;
+  color: black;
+  font-size: 32px;
+  padding-top: 24px;
+}
+
+.log-in__player--text:hover {
+  color: #0a6f9d;
+}
+
+.log-in__player--underline {
+  text-underline-offset: 3px;
+}
+
 /* 
 
 BOOK INFO PAGE
@@ -1628,6 +1644,7 @@ BOOK INFO PAGE
 .audio__controls--btn {
   border-radius: 50%;
   cursor: pointer;
+  color: white;
 }
 .audio__controls--btn svg {
   width: 28px;
@@ -1649,6 +1666,7 @@ BOOK INFO PAGE
 }
 .audio__controls--btn-play svg {
   color: #042330;
+  margin-left: 2px;
 }
 .audio__controls--play-icon {
   margin-left: 4px;

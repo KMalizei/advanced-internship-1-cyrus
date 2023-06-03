@@ -1,9 +1,9 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useRef, useEffect } from "react";
-import LogInModal from "./LogInModal";
-import { auth } from "../../firebase";
-import { useAuthStore } from "../../utilities/authStore";
+import LogInModal from "./UI/LogInModal";
+import { auth } from "../firebase";
+import { useAuthStore } from "../utilities/authStore";
 import { useParams } from "next/navigation";
 
 function SideBar() {

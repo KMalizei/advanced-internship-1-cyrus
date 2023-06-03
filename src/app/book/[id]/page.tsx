@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import SearchBar from "@/app/components/UI/SearchBar";
-import SideBar from "@/app/components/UI/SideBar";
+import SearchBar from "@/app/components/SearchBar";
+import SideBar from "@/app/components/SideBar";
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";

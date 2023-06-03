@@ -1,12 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import SearchBar from "../components/UI/SearchBar";
-import SideBar from "../components/UI/SideBar";
+import SearchBar from "../components/SearchBar";
+import SideBar from "../components/SideBar";
 import RecommendedBooks from "../components/RecomendedBooks";
 import SuggestedBooks from "../components/SuggestedBooks";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import SelectedSkeleton from "../components/UI/SelectedSkeleton";
 
 interface SelectedBook {
@@ -112,7 +111,7 @@ function Page() {
                         </svg>
                       </div>
                       <div className="selected__book--duration">
-                        3 mins 23 secs
+                        3 mins <br /> 23 secs
                       </div>
                     </div>
                   </div>
@@ -132,6 +131,7 @@ function Page() {
             <div>
               <div className="for-you__title">Suggested Books</div>
               <div className="for-you__sub--title">Browse these books</div>
+
               <div className="for-you__recommended--books">
                 <SuggestedBooks />
               </div>
