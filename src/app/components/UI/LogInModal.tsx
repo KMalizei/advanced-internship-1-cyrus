@@ -34,6 +34,7 @@ function LogInModal({ openModal }: { openModal: any }) {
         loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
+          uid: user.uid,
         });
       }
       openModal();
@@ -52,6 +53,7 @@ function LogInModal({ openModal }: { openModal: any }) {
         loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
+          uid: user.uid,
         });
       }
       openModal();
@@ -64,7 +66,7 @@ function LogInModal({ openModal }: { openModal: any }) {
     try {
       e.preventDefault();
       const auth = getAuth();
-      const email = "guest123@gmail.com";
+      const email = "guest@gmail.com";
       const password = "guest123";
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
@@ -72,6 +74,7 @@ function LogInModal({ openModal }: { openModal: any }) {
         loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
+          uid: user.uid,
         });
       }
       openModal();
@@ -90,6 +93,7 @@ function LogInModal({ openModal }: { openModal: any }) {
         loginAuthSuccess();
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
+          uid: user.uid,
         });
       }
       openModal();
@@ -115,6 +119,7 @@ function LogInModal({ openModal }: { openModal: any }) {
     const user = getAuth().currentUser;
     localStorage.setItem("email-storage", user?.email || "");
     localStorage.setItem("auth-storage", "true");
+    localStorage.setItem("uid-storage", user?.uid || "");
     authStore.setIsUserAuth(true);
     emailStore.setEmail(user?.email || "");
   };

@@ -111,7 +111,7 @@ function Page() {
                         <div className="selected__book--icon">
                           <AiFillPlayCircle />
                         </div>
-                        {book?.audioLink && (
+                        {/* {book?.audioLink && (
                           <>
                             <audio
                               src={book?.audioLink}
@@ -123,7 +123,7 @@ function Page() {
                               {formatTime(duration)}
                             </div>
                           </>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>

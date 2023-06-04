@@ -3,13 +3,19 @@
 import React, { useEffect, useState, useRef } from "react";
 import SearchBar from "../components/SearchBar";
 import SideBar from "../components/SideBar";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import LogInModal from "../components/UI/LogInModal";
+import usePremiumStatus from "../stripe/usePremiumStatus";
+import { useRouter } from "next/navigation";
 
 function UserSettings() {
+  let [userIsPremium, setUserIsPremium] = useState<boolean>();
   const [email, setEmail] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modal__dimRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const user = getAuth().currentUser;
+  userIsPremium = usePremiumStatus(user);
 
   useEffect(() => {
     const auth = getAuth();
@@ -46,12 +52,27 @@ function UserSettings() {
             <div className="section__title page__title">Settings</div>
             {email ? (
               <>
-                <div className="setting__content">
-                  <div className="settings__sub--title">
-                    Your Subscription plan
+                {userIsPremium ? (
+                  <div className="setting__content">
+                    <div className="settings__sub--title">
+                      Your Subscription plan
+                    </div>
+                    <div className="settings__text">Premium-Plus</div>
                   </div>
-                  <div className="settings__text">premium-plus</div>
-                </div>
+                ) : (
+                  <div className="setting__content">
+                    <div className="settings__sub--title">
+                      Your Subscription plan
+                    </div>
+                    <div className="settings__text">Basic</div>
+                    <button
+                      className="btn settings__upgrade--btn"
+                      onClick={() => router.push("/choose-plan")}
+                    >
+                      Upgrade to Premium
+                    </button>
+                  </div>
+                )}
                 <div className="setting__content">
                   <div className="settings__sub--title">Email</div>
                   <div className="settings__text">{email}</div>
