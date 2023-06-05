@@ -16,6 +16,8 @@ import {
 import { BiMicrophone } from "react-icons/bi";
 import { IoBookOutline, IoBookmarkOutline } from "react-icons/io5";
 import SidebarSizing from "@/app/components/UI/SidebarSizing";
+import usePremiumStatus from "@/app/stripe/usePremiumStatus";
+import { getAuth } from "firebase/auth";
 
 interface Book {
   id: string;
@@ -41,6 +43,7 @@ interface Book {
 }
 
 const Page = () => {
+  let [userIsPremium, setUserIsPremium] = useState<boolean>();
   const [book, setBook] = useState<Book | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,6 +59,8 @@ const Page = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const user = getAuth().currentUser;
+  userIsPremium = usePremiumStatus(user);
 
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;
 
@@ -80,14 +85,13 @@ const Page = () => {
       openModal();
     } else if (isUserAuth === true && !book?.subscriptionRequired) {
       routeToPlayer();
+    } else if (isUserAuth === true && book?.subscriptionRequired) {
+      if (userIsPremium === true) {
+        routeToPlayer();
+      } else {
+        router.push("/choose-plan");
+      }
     }
-    // else if (isUserAuth === true && book?.subscriptionRequired) {
-    //   if (userSubscription === true) {
-    //     routeToPlayer();
-    //   } else {
-    //     router.push("/choose-plan");
-    //   }
-    // }
   };
 
   const routeToPlayer = () => {

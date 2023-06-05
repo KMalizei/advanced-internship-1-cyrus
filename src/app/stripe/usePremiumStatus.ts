@@ -1,19 +1,23 @@
-import { useState, useEffect } from "react";
-import { getAuth, User } from "firebase/auth";
-import isUserPremium from "./isUserPremium";
-import { auth } from "../firebase";
+import { onIdTokenChanged, getAuth } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { User } from "firebase/auth";
 
 export default function usePremiumStatus(user: User | null) {
   const [premiumStatus, setPremiumStatus] = useState<boolean>(false);
 
   useEffect(() => {
-    if (user) {
-      const checkPremiumStatus = async function () {
-        const status = await isUserPremium();
-        setPremiumStatus(status);
-      };
-      checkPremiumStatus();
-    }
+    const auth = getAuth();
+
+    return onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        const tokenResult = await user.getIdTokenResult();
+        if (tokenResult.claims.stripeRole === "premium") {
+          setPremiumStatus(true);
+        }
+      } else {
+        setPremiumStatus(false);
+      }
+    });
   }, [user]);
 
   return premiumStatus;

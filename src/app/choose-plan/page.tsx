@@ -13,11 +13,13 @@ import Typography from "@mui/material/Typography";
 import SideBar from "../components/SideBar";
 import usePremiumStatus from "../stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
-import createCheckoutSession from "../stripe/createCheckoutSession";
+import createYearlySubscriptionCheckoutSession from "../stripe/createYearlySubscriptionCheckoutSession";
+import createMonthlySubscriptionCheckoutSession from "../stripe/createMonthlySubscriptionCheckoutSession";
 
 function Page() {
   const [activePlan, setActivePlan] = useState<string>("yearly");
   const [expanded, setExpanded] = React.useState<string | false>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const user = getAuth().currentUser;
   const userIsPremium = usePremiumStatus(user);
@@ -139,7 +141,9 @@ function Page() {
                     <button
                       className="btn"
                       style={{ width: "300px" }}
-                      onClick={() => createCheckoutSession(user!.uid)}
+                      onClick={() =>
+                        createYearlySubscriptionCheckoutSession(user!.uid)
+                      }
                     >
                       <span>Start your free 7-day trial</span>
                     </button>
@@ -152,7 +156,13 @@ function Page() {
               ) : (
                 <>
                   <span className="btn--wrapper">
-                    <button className="btn" style={{ width: "300px" }}>
+                    <button
+                      className="btn"
+                      style={{ width: "300px" }}
+                      onClick={() =>
+                        createMonthlySubscriptionCheckoutSession(user!.uid)
+                      }
+                    >
                       <span>Start your first month</span>
                     </button>
                   </span>

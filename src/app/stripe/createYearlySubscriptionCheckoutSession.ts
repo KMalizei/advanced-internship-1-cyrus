@@ -12,15 +12,15 @@ import { useEffect } from "react";
 import { useState } from "react";
 import getStripe from "./initializeStripe";
 
-export default async function createCheckoutSession(uid: string) {
+export default async function createYearlySubscriptionCheckoutSession(uid: string) {
   const firestore = getFirestore();
 
   const checkoutSessionRef = await addDoc(
     collection(firestore, "users", uid, "checkout_sessions"),
     {
       price: "price_1NFBNKD7glSKtpchwHMr1R01",
-      success_url: window.location.origin,
-      cancel_url: window.location.origin,
+      success_url: window.location.origin + "/success",
+      cancel_url: window.location.origin + "/settings",
     }
   );
 
