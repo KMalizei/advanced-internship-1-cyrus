@@ -15,14 +15,22 @@ import { RiBallPenLine, RiFileUploadLine } from "react-icons/ri";
 import { RxDownload, RxLetterCaseCapitalize, RxUpload } from "react-icons/rx";
 import { BsGear } from "react-icons/bs";
 
-function SideBar() {
+
+interface SideBarProps {
+  isSidebarOpen: boolean; // Change the prop name to isSidebarOpen
+}
+
+const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fontSizes, setFontSizes] = useState("font1");
+ 
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
   const params = useParams();
   const fontSize = document.querySelector(".audio__book--summary-text");
+
+
 
   function openModal() {
     setIsModalOpen(!isModalOpen);
@@ -80,7 +88,8 @@ function SideBar() {
         ref={modal__dimRef}
         onClick={handleOverlayClick}
       >
-        <div className="sidebar sidebar--closed">
+        <div className={`sidebar ${isSidebarOpen ? "sidebar--opened" : ""}`} > 
+        
           <div className="sidebar__logo">
             <img
               alt=""

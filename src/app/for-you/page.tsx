@@ -8,6 +8,8 @@ import axios from "axios";
 import React, { useState, useEffect, MutableRefObject, useRef } from "react";
 import SelectedSkeleton from "../components/UI/SelectedSkeleton";
 import { AiFillPlayCircle } from "react-icons/ai";
+import SidebarSizing from "../components/UI/SidebarSizing";
+
 
 interface SelectedBook {
   id?: string;
@@ -39,6 +41,11 @@ function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<any | undefined>();
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   const selectedBookQuery = async () => {
     const { data } = await axios.get(
@@ -68,12 +75,33 @@ function Page() {
     setDuration(seconds);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
+    <>
+    <SidebarSizing isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      {/* {!isSidebarOpen && <></>}
+      {isSidebarOpen && <SideBar  isSidebarOpen={isSidebarOpen}/>} */}
     <div className="wrapper">
-      <SearchBar />
       <div className="row">
         <div className="container">
-          <SideBar />
+        {/* <SearchBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
           {isLoading ? (
             <div className="for-you__wrapper">
               <div className="for-you__title">Selected just for you</div>
@@ -152,6 +180,7 @@ function Page() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

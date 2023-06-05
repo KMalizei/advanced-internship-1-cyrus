@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import LogInModal from "../components/UI/LogInModal";
 import usePremiumStatus from "../stripe/usePremiumStatus";
 import { useRouter } from "next/navigation";
+import SidebarSizing from "../components/UI/SidebarSizing";
 
 function UserSettings() {
   let [userIsPremium, setUserIsPremium] = useState<boolean>();
@@ -16,6 +17,11 @@ function UserSettings() {
   const router = useRouter();
   const user = getAuth().currentUser;
   userIsPremium = usePremiumStatus(user);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   useEffect(() => {
     const auth = getAuth();
@@ -43,9 +49,9 @@ function UserSettings() {
 
   return (
     <div>
-      <SearchBar />
+
       <div className={`sidebar ${isModalOpen ? "dimmed" : ""}`}></div>
-      <SideBar />
+      <SidebarSizing isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <section>
         <div className="container">
           <div className="row setting__row">
