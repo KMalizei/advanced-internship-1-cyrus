@@ -89,9 +89,7 @@ export default function RecommendedBooks({
                 )}
                 <audio
                   src={book.audioLink}
-                  ref={(audioRef) =>
-                    (audioRefs.current[audioId] = audioRef)
-                  }
+                  ref={(audioRef) => (audioRefs.current[audioId] = audioRef)}
                   onLoadedMetadata={() => onLoadedMetadata(audioId)}
                   className="no__display"
                 />

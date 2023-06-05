@@ -12,7 +12,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import getStripe from "./initializeStripe";
 
-export default async function createYearlySubscriptionCheckoutSession(uid: string) {
+export default async function createYearlySubscriptionCheckoutSession(
+  uid: string
+) {
   const firestore = getFirestore();
 
   const checkoutSessionRef = await addDoc(

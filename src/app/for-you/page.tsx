@@ -10,7 +10,6 @@ import SelectedSkeleton from "../components/UI/SelectedBookSkeleton";
 import { AiFillPlayCircle } from "react-icons/ai";
 import SidebarSizing from "../components/UI/SidebarSizing";
 
-
 interface SelectedBook {
   id: string;
   author?: string;
@@ -38,10 +37,12 @@ function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<any | undefined>();
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   const [audioDurations, setAudioDurations] = useState<{
     [id: string]: number;
   }>({});
@@ -97,126 +98,130 @@ function Page() {
 
   return (
     <>
-    <SidebarSizing isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      {/* {!isSidebarOpen && <></>}
-      {isSidebarOpen && <SideBar  isSidebarOpen={isSidebarOpen}/>} */}
-    <div className="wrapper">
-      <div className="row">
-        <div className="container">
-        {/* <SearchBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
-          {isLoading ? (
-            <>
+      <SidebarSizing
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
+      <div className="wrapper">
+        <div className="row">
+          <div className="container">
+            {isLoading ? (
+              <>
+                <div className="for-you__wrapper">
+                  <div className="for-you__title">Selected just for you</div>
+                  <div className="selected__book">
+                    <SelectedSkeleton />
+                  </div>
+                </div>
+                <div>
+                  <div className="for-you__title">Recommended For You</div>
+                  <div className="for-you__sub--title">
+                    We think you&apos;ll like these
+                  </div>
+                  <div className="for-you__recommended--books">
+                    <RecommendedBooks
+                      audioDurations={audioDurations}
+                      audioRefs={audioRefs}
+                      onLoadedMetadata={onLoadedMetadata}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="for-you__title">Suggested Books</div>
+                  <div className="for-you__sub--title">Browse these books</div>
+                  <div className="for-you__recommended--books">
+                    <SuggestedBooks
+                      audioDurations={audioDurations}
+                      audioRefs={audioRefs}
+                      onLoadedMetadata={onLoadedMetadata}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
               <div className="for-you__wrapper">
                 <div className="for-you__title">Selected just for you</div>
-                <div className="selected__book">
-                  <SelectedSkeleton />
-                </div>
-              </div>
-              <div>
-                <div className="for-you__title">Recommended For You</div>
-                <div className="for-you__sub--title">
-                  We think you&apos;ll like these
-                </div>
-                <div className="for-you__recommended--books">
-                  <RecommendedBooks
-                    audioDurations={audioDurations}
-                    audioRefs={audioRefs}
-                    onLoadedMetadata={onLoadedMetadata}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="for-you__title">Suggested Books</div>
-                <div className="for-you__sub--title">Browse these books</div>
-                <div className="for-you__recommended--books">
-                  <SuggestedBooks
-                    audioDurations={audioDurations}
-                    audioRefs={audioRefs}
-                    onLoadedMetadata={onLoadedMetadata}
-                  />
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="for-you__wrapper">
-              <div className="for-you__title">Selected just for you</div>
-              {selectedBook.map((book, index) => (
-                <a
-                  key={index}
-                  href={`book/${book.id}`}
-                  className="selected__book"
-                >
-                  <div className="selected__book--sub-title">
-                    {book.subTitle}
-                  </div>
-                  <div className="selected__book--line"></div>
-                  <div className="selected__book--content">
-                    <figure className="book__image--wrapper">
-                      <img
-                        className=" book__image"
-                        src={book.imageLink}
-                        alt="book"
-                      />
-                    </figure>
-                    <div className="selected__book--text">
-                      <div className="selected__book--title">{book.title}</div>
-                      <div className="selected__book--author">
-                        {book.author}
-                      </div>
-                      <div className="selected__book--duration-wrapper">
-                        <div className="selected__book--icon">
-                          <AiFillPlayCircle />
+                {selectedBook.map((book, index) => (
+                  <a
+                    key={index}
+                    href={`book/${book.id}`}
+                    className="selected__book"
+                  >
+                    <div className="selected__book--sub-title">
+                      {book.subTitle}
+                    </div>
+                    <div className="selected__book--line"></div>
+                    <div className="selected__book--content">
+                      <figure className="book__image--wrapper">
+                        <img
+                          className=" book__image"
+                          src={book.imageLink}
+                          alt="book"
+                        />
+                      </figure>
+                      <div className="selected__book--text">
+                        <div className="selected__book--title">
+                          {book.title}
                         </div>
-                        {book?.audioLink && (
-                          <>
-                            <audio
-                              src={book?.audioLink}
-                              ref={(audioRef) =>
-                                (audioRefs.current[book.id] = audioRef)
-                              }
-                              onLoadedMetadata={() => onLoadedMetadata(book.id)}
-                              className="no__display"
-                            />
-                            <div className="selected__book--duration">
-                              {formatTime(audioDurations[book.id] || 0)}
-                            </div>
-                          </>
-                        )}
+                        <div className="selected__book--author">
+                          {book.author}
+                        </div>
+                        <div className="selected__book--duration-wrapper">
+                          <div className="selected__book--icon">
+                            <AiFillPlayCircle />
+                          </div>
+                          {book?.audioLink && (
+                            <>
+                              <audio
+                                src={book?.audioLink}
+                                ref={(audioRef) =>
+                                  (audioRefs.current[book.id] = audioRef)
+                                }
+                                onLoadedMetadata={() =>
+                                  onLoadedMetadata(book.id)
+                                }
+                                className="no__display"
+                              />
+                              <div className="selected__book--duration">
+                                {formatTime(audioDurations[book.id] || 0)}
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
+                  </a>
+                ))}
+                <div>
+                  <div className="for-you__title">Recommended For You</div>
+                  <div className="for-you__sub--title">
+                    We think you&apos;ll like these
                   </div>
-                </a>
-              ))}
-              <div>
-                <div className="for-you__title">Recommended For You</div>
-                <div className="for-you__sub--title">
-                  We think you&apos;ll like these
+                  <div className="for-you__recommended--books">
+                    <RecommendedBooks
+                      audioDurations={audioDurations}
+                      audioRefs={audioRefs}
+                      onLoadedMetadata={onLoadedMetadata}
+                    />
+                  </div>
                 </div>
-                <div className="for-you__recommended--books">
-                  <RecommendedBooks
-                    audioDurations={audioDurations}
-                    audioRefs={audioRefs}
-                    onLoadedMetadata={onLoadedMetadata}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="for-you__title">Suggested Books</div>
-                <div className="for-you__sub--title">Browse these books</div>
+                <div>
+                  <div className="for-you__title">Suggested Books</div>
+                  <div className="for-you__sub--title">Browse these books</div>
 
-                <div className="for-you__recommended--books">
-                  <SuggestedBooks
-                    audioDurations={audioDurations}
-                    audioRefs={audioRefs}
-                    onLoadedMetadata={onLoadedMetadata}
-                  />
+                  <div className="for-you__recommended--books">
+                    <SuggestedBooks
+                      audioDurations={audioDurations}
+                      audioRefs={audioRefs}
+                      onLoadedMetadata={onLoadedMetadata}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

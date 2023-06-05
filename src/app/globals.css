@@ -895,24 +895,18 @@ SIDEBAR
   transform: rotate(90deg);
 }
 
-
-
 .sidebar--opened {
   transform: translateX(0);
   transition: transform 0.3s ease, width 0.3s ease;
 }
 
-
-
 @media (max-width: 768px) {
-  
   .sidebar--opened {
     transform: translateX(0);
     width: 80%;
     transition: transform 0.3s ease, width 0.3s ease;
   }
 }
-
 
 /* 
 

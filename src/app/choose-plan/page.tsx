@@ -15,11 +15,17 @@ import usePremiumStatus from "../stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
 import createYearlySubscriptionCheckoutSession from "../stripe/createYearlySubscriptionCheckoutSession";
 import createMonthlySubscriptionCheckoutSession from "../stripe/createMonthlySubscriptionCheckoutSession";
+import SidebarSizing from "../components/UI/SidebarSizing";
 
 function Page() {
   const [activePlan, setActivePlan] = useState<string>("yearly");
   const [expanded, setExpanded] = React.useState<string | false>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const user = getAuth().currentUser;
   const userIsPremium = usePremiumStatus(user);
@@ -274,7 +280,10 @@ function Page() {
         <Footer />
       </div>
       <div className="not__visible">
-        <SideBar />
+        <SidebarSizing
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
       </div>
     </>
   );

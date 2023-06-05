@@ -43,11 +43,11 @@ function Page() {
   const router = useRouter();
   const isUserAuth = authStore?.isUserAuth;
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const getBook = async () => {
     const { data } = await axios.get(API__URL);
@@ -77,7 +77,10 @@ function Page() {
 
   return (
     <>
-    <SidebarSizing isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <SidebarSizing
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       {isLoading && (
         <>
           <PlayerSkeleton />
