@@ -895,16 +895,24 @@ SIDEBAR
   transform: rotate(90deg);
 }
 
+
+
 .sidebar--opened {
   transform: translateX(0);
-  width: 80%;
+  transition: transform 0.3s ease, width 0.3s ease;
 }
 
+
+
 @media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
+  
+  .sidebar--opened {
+    transform: translateX(0);
+    width: 80%;
+    transition: transform 0.3s ease, width 0.3s ease;
   }
 }
+
 
 /* 
 
@@ -1189,6 +1197,13 @@ FOR-YOU PAGE
 
 .search__book--img {
   width: 100%;
+}
+
+.sidebar__toggle--btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

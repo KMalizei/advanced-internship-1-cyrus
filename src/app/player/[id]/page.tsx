@@ -10,6 +10,7 @@ import LogInModal from "@/app/components/UI/LogInModal";
 import AudioPlayer from "@/app/components/UI/AudioPlayer";
 import PlayerSkeleton from "@/app/components/UI/PlayerSkeleton";
 import { auth } from "@/app/firebase";
+import SidebarSizing from "@/app/components/UI/SidebarSizing";
 
 interface Book {
   id: string;
@@ -42,6 +43,11 @@ function Page() {
   const router = useRouter();
   const isUserAuth = authStore?.isUserAuth;
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   const getBook = async () => {
     const { data } = await axios.get(API__URL);
@@ -71,8 +77,7 @@ function Page() {
 
   return (
     <>
-      <SideBar />
-      <SearchBar />
+    <SidebarSizing isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       {isLoading && (
         <>
           <PlayerSkeleton />

@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import LogInModal from "../components/UI/LogInModal";
 import usePremiumStatus from "../stripe/usePremiumStatus";
 import { useRouter } from "next/navigation";
+import SidebarSizing from "../components/UI/SidebarSizing";
 import Skeleton from "../components/UI/Skeleton";
 
 function UserSettings() {
@@ -19,6 +20,12 @@ function UserSettings() {
   const modal__dimRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const user = getAuth().currentUser;
+  userIsPremium = usePremiumStatus(user);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
   const premiumStatus = usePremiumStatus(user);
 
   useEffect(() => {
@@ -48,9 +55,9 @@ function UserSettings() {
 
   return (
     <div>
-      <SearchBar />
+
       <div className={`sidebar ${isModalOpen ? "dimmed" : ""}`}></div>
-      <SideBar />
+      <SidebarSizing isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       {isLoading ? (
         <section>
           <div className="container">
@@ -81,6 +88,7 @@ function UserSettings() {
           </div>
         </section>
       ) : (
+       <SidebarSizing isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <section>
           <div className="container">
             <div className="row setting__row">

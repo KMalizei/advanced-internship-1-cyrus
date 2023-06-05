@@ -15,6 +15,7 @@ import {
 } from "react-icons/ai";
 import { BiMicrophone } from "react-icons/bi";
 import { IoBookOutline, IoBookmarkOutline } from "react-icons/io5";
+import SidebarSizing from "@/app/components/UI/SidebarSizing";
 import usePremiumStatus from "@/app/stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
 
@@ -53,6 +54,11 @@ const Page = () => {
   const audioRef = useRef<any | undefined>();
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   const user = getAuth().currentUser;
   userIsPremium = usePremiumStatus(user);
 
@@ -126,10 +132,14 @@ const Page = () => {
       {isLoading ? (
         <>
           <div className="wrapper">
-            <SearchBar />
+            <SidebarSizing
+              isSidebarOpen={isSidebarOpen}
+              toggleSidebar={toggleSidebar}
+            />
+
             <div className="row">
               <div className="container">
-                <SideBar />
+                {/* <SideBar /> */}
                 <BookSkeleton />
               </div>
             </div>
@@ -137,8 +147,12 @@ const Page = () => {
         </>
       ) : (
         <div className={`wrapper ${isModalOpen ? "dimmed" : ""}`}>
-          <SearchBar />
-          <SideBar />
+          <SidebarSizing
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+          />
+          {/* <SearchBar />
+          <SideBar /> */}
           <div className="row">
             <div className="container">
               <div className="inner__wrapper">
