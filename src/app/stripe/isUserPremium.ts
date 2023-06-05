@@ -1,9 +1,9 @@
-import { auth } from "../firebase";
+import { User } from "firebase/auth";
 
-export default async function isUserPremium(): Promise<boolean> {
-  const user = auth?.currentUser;
-  if (!user) return false;
-  const idTokenResult = await user.getIdTokenResult();
-
-  return !!idTokenResult.claims.stripeRole ? true : false;
+export default async function isUserPremium(
+  user: User | null
+): Promise<boolean> {
+  await user!.getIdToken(true);
+  const decodedToken = await user!.getIdTokenResult();
+  return decodedToken.claims.stripeRole;
 }

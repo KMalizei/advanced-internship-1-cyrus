@@ -6,11 +6,11 @@ import RecommendedBooks from "../components/RecomendedBooks";
 import SuggestedBooks from "../components/SuggestedBooks";
 import axios from "axios";
 import React, { useState, useEffect, MutableRefObject, useRef } from "react";
-import SelectedSkeleton from "../components/UI/SelectedSkeleton";
+import SelectedSkeleton from "../components/UI/SelectedBookSkeleton";
 import { AiFillPlayCircle } from "react-icons/ai";
 
 interface SelectedBook {
-  id?: string;
+  id: string;
   author?: string;
   title?: string;
   subTitle?: string;
@@ -29,21 +29,22 @@ interface SelectedBook {
   selectedBookQuery?: () => void;
   onClick?: () => void;
   handleBookClick: (id: string) => void;
-  duration: any;
-  audioRef: MutableRefObject<any | undefined>;
-  setDuration: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [duration, setDuration] = useState(0);
-  const audioRef = useRef<any | undefined>();
+  const [audioDurations, setAudioDurations] = useState<{
+    [id: string]: number;
+  }>({});
+  const audioRefs: MutableRefObject<{ [id: string]: HTMLAudioElement | null }> =
+    useRef({});
 
   const selectedBookQuery = async () => {
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected"
     );
+    console.log(data);
     setSelectedBook(data);
     setIsLoading(false);
   };
@@ -63,9 +64,9 @@ function Page() {
     return "00:00";
   };
 
-  const onLoadedMetadata = () => {
-    const seconds = audioRef.current.duration;
-    setDuration(seconds);
+  const onLoadedMetadata = (id: string) => {
+    const seconds = audioRefs.current[id]?.duration || 0;
+    setAudioDurations((prevDurations) => ({ ...prevDurations, [id]: seconds }));
   };
 
   return (
@@ -75,12 +76,38 @@ function Page() {
         <div className="container">
           <SideBar />
           {isLoading ? (
-            <div className="for-you__wrapper">
-              <div className="for-you__title">Selected just for you</div>
-              <div className="selected__book">
-                <SelectedSkeleton />
+            <>
+              <div className="for-you__wrapper">
+                <div className="for-you__title">Selected just for you</div>
+                <div className="selected__book">
+                  <SelectedSkeleton />
+                </div>
               </div>
-            </div>
+              <div>
+                <div className="for-you__title">Recommended For You</div>
+                <div className="for-you__sub--title">
+                  We think you&apos;ll like these
+                </div>
+                <div className="for-you__recommended--books">
+                  <RecommendedBooks
+                    audioDurations={audioDurations}
+                    audioRefs={audioRefs}
+                    onLoadedMetadata={onLoadedMetadata}
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="for-you__title">Suggested Books</div>
+                <div className="for-you__sub--title">Browse these books</div>
+                <div className="for-you__recommended--books">
+                  <SuggestedBooks
+                    audioDurations={audioDurations}
+                    audioRefs={audioRefs}
+                    onLoadedMetadata={onLoadedMetadata}
+                  />
+                </div>
+              </div>
+            </>
           ) : (
             <div className="for-you__wrapper">
               <div className="for-you__title">Selected just for you</div>
@@ -111,32 +138,37 @@ function Page() {
                         <div className="selected__book--icon">
                           <AiFillPlayCircle />
                         </div>
-                        {/* {book?.audioLink && (
+                        {book?.audioLink && (
                           <>
                             <audio
                               src={book?.audioLink}
-                              ref={audioRef}
-                              onLoadedMetadata={onLoadedMetadata}
+                              ref={(audioRef) =>
+                                (audioRefs.current[book.id] = audioRef)
+                              }
+                              onLoadedMetadata={() => onLoadedMetadata(book.id)}
                               className="no__display"
                             />
                             <div className="selected__book--duration">
-                              {formatTime(duration)}
+                              {formatTime(audioDurations[book.id] || 0)}
                             </div>
                           </>
-                        )} */}
+                        )}
                       </div>
                     </div>
                   </div>
                 </a>
               ))}
-
               <div>
                 <div className="for-you__title">Recommended For You</div>
                 <div className="for-you__sub--title">
-                  We think you{`'`}ll like these
+                  We think you&apos;ll like these
                 </div>
                 <div className="for-you__recommended--books">
-                  <RecommendedBooks {...{ duration, audioRef, setDuration }} />
+                  <RecommendedBooks
+                    audioDurations={audioDurations}
+                    audioRefs={audioRefs}
+                    onLoadedMetadata={onLoadedMetadata}
+                  />
                 </div>
               </div>
               <div>
@@ -144,7 +176,11 @@ function Page() {
                 <div className="for-you__sub--title">Browse these books</div>
 
                 <div className="for-you__recommended--books">
-                  <SuggestedBooks />
+                  <SuggestedBooks
+                    audioDurations={audioDurations}
+                    audioRefs={audioRefs}
+                    onLoadedMetadata={onLoadedMetadata}
+                  />
                 </div>
               </div>
             </div>

@@ -2013,6 +2013,21 @@ PLANS
   line-height: 1.5;
   font-size: 16px;
 }
+.success__page--text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -30%);
+  font-size: 32px;
+  color: #394547;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+.success__page--bg {
+  width: 100%;
+  height: 100vh;
+  background-color: #f1f6f4;
+}
 @media (max-width: 768px) {
   .accordion__title {
     font-size: 18px;
