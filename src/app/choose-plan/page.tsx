@@ -4,13 +4,12 @@ import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { RiPlantFill } from "react-icons/ri";
-import { FaHandshake } from "react-icons/fa";
+import { FaHandshake, FaSpinner } from "react-icons/fa";
 import { AiOutlineDown } from "react-icons/ai";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import SideBar from "../components/SideBar";
 import usePremiumStatus from "../stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
 import createYearlySubscriptionCheckoutSession from "../stripe/createYearlySubscriptionCheckoutSession";
@@ -29,6 +28,16 @@ function Page() {
 
   const user = getAuth().currentUser;
   const userIsPremium = usePremiumStatus(user);
+
+  const handleYearlyCheckout = () => {
+    setIsLoading(true);
+    createYearlySubscriptionCheckoutSession(user!.uid);
+  };
+
+  const handleMonthlyCheckout = () => {
+    setIsLoading(true);
+    createMonthlySubscriptionCheckoutSession(user!.uid);
+  };
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -147,11 +156,15 @@ function Page() {
                     <button
                       className="btn"
                       style={{ width: "300px" }}
-                      onClick={() =>
-                        createYearlySubscriptionCheckoutSession(user!.uid)
-                      }
+                      onClick={() => handleYearlyCheckout()}
                     >
-                      <span>Start your free 7-day trial</span>
+                      {!isLoading ? (
+                        <span>Start your free 7-day trial</span>
+                      ) : (
+                        <div className="log__in--spinner">
+                          <FaSpinner />
+                        </div>
+                      )}
                     </button>
                   </span>
                   <div className="plan__disclaimer">
@@ -165,11 +178,15 @@ function Page() {
                     <button
                       className="btn"
                       style={{ width: "300px" }}
-                      onClick={() =>
-                        createMonthlySubscriptionCheckoutSession(user!.uid)
-                      }
+                      onClick={() => handleMonthlyCheckout()}
                     >
-                      <span>Start your first month</span>
+                      {!isLoading ? (
+                        <span>Start your first month</span>
+                      ) : (
+                        <div className="log__in--spinner">
+                          <FaSpinner />
+                        </div>
+                      )}
                     </button>
                   </span>
                   <div className="plan__disclaimer">
@@ -277,7 +294,6 @@ function Page() {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
       <div className="not__visible">
         <SidebarSizing
@@ -285,6 +301,7 @@ function Page() {
           toggleSidebar={toggleSidebar}
         />
       </div>
+      <Footer />
     </>
   );
 }

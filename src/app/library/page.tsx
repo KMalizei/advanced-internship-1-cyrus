@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useEffect, MutableRefObject, useRef } from "react";
 import SavedBooks from "../components/SavedBooks";
@@ -10,9 +11,20 @@ import {
 } from "firebase/auth";
 import { db } from "../firebase";
 import { useBookStore } from "../utilities/bookStore";
+import { useAuthStore } from "@/app/utilities/authStore";
+import LogInModal from "../components/UI/LogInModal";
+import RecommendedSkeleton from "../components/UI/RecommendedSkeleton";
+
+interface ArrayInterface {
+  Array: any;
+}
 
 function Library() {
+  const user = getAuth().currentUser;
+  const authStore = useAuthStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const skeletonArray = Array.from({ length: 6 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [savedBooks, setSavedBooks] = useState<any[]>([]);
   const [savedBookIds, setSavedBookIds] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -22,10 +34,22 @@ function Library() {
   const audioRefs: MutableRefObject<{ [id: string]: HTMLAudioElement | null }> =
     useRef({});
   const { addFinishedBook } = useBookStore();
+  const modal__dimRef = useRef(null);
+  const isUserAuth = authStore?.isUserAuth;
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  function openModal() {
+    setIsModalOpen(!isModalOpen);
+  }
+
+  function handleOverlayClick(event: any) {
+    if (event.target === modal__dimRef.current) {
+      openModal();
+    }
+  }
 
   const onLoadedMetadata = (id: string) => {
     const seconds = audioRefs.current[id]?.duration || 0;
@@ -43,7 +67,6 @@ function Library() {
         );
         await deleteDoc(bookRef);
 
-        // Update the savedBooks state by filtering out the deleted book
         setSavedBooks((prevSavedBooks) =>
           prevSavedBooks.filter((book) => book.id !== bookId)
         );
@@ -56,6 +79,7 @@ function Library() {
   useEffect(() => {
     const fetchSavedBooks = async () => {
       try {
+        setIsLoading(true);
         const auth = getAuth();
         await setPersistence(auth, browserSessionPersistence);
         const user = auth.currentUser;
@@ -77,8 +101,8 @@ function Library() {
 
   useEffect(() => {
     const fetchBooksData = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
         if (savedBookIds.length === 0) {
           return;
         }
@@ -125,10 +149,12 @@ function Library() {
 
         const books = await Promise.all(bookPromises);
         setSavedBooks(books);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching saved books:", error);
       }
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     };
 
     fetchBooksData();
@@ -153,30 +179,80 @@ function Library() {
       />
       <div className="row">
         <div className="container">
-          <div className="for-you__title">Saved Books</div>
-          <div className="for-you__sub--title">
-            {savedBooks.length} {savedBooks.length === 1 ? "item" : "items"}
-          </div>
-          <div className="for-you__recommended--books">
-            <SavedBooks
-              savedBooks={savedBooks}
-              audioDurations={audioDurations}
-              audioRefs={audioRefs}
-              onLoadedMetadata={onLoadedMetadata}
-              onMoveToFinished={moveBookToFinished}
-              onDeleteBook={onDeleteBook}
-              isLoading={isLoading}
-            />
-          </div>
-          <div className="for-you__title">Finished</div>
-          <div className="for-you__sub--title">&quot;0&quot; Items</div>
-          <div className="for-you__recommended--books"></div>
-          <div className="library_libBlockWrapper__8mLgC">
-            <h2>Done and dusted!</h2>
-            <p>When you finish a book, you can find it here later.</p>
-          </div>
+          {isUserAuth ? (
+            <>
+              <div className="for-you__title">Saved Books</div>
+              <div className="for-you__sub--title">
+                {savedBooks.length} {savedBooks.length === 1 ? "item" : "items"}
+              </div>
+              {savedBooks.length === 0 ? (
+                <div className="no-books"></div>
+              ) : (
+                <div className="for-you__recommended--books">
+                  {isLoading ? (
+                    <>
+                      {Array.from({ length: savedBooks.length }).map((_, index) => (
+                        <div
+                          className="for-you__recommended--books-link"
+                          key={index}
+                        >
+                          <RecommendedSkeleton />
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <SavedBooks
+                        savedBooks={savedBooks}
+                        audioDurations={audioDurations}
+                        audioRefs={audioRefs}
+                        onLoadedMetadata={onLoadedMetadata}
+                        onMoveToFinished={moveBookToFinished}
+                        onDeleteBook={onDeleteBook}
+                        isLoading={isLoading}
+                      />
+                    </>
+                  )}
+                </div>
+              )}
+              <div className="for-you__title">Finished</div>
+              <div className="for-you__sub--title">&quot;0&quot; Items</div>
+              <div className="for-you__recommended--books"></div>
+              <div className="library_libBlockWrapper__8mLgC">
+                <h2>Done and dusted!</h2>
+                <p>When you finish a book, you can find it here later.</p>
+              </div>
+            </>
+          ) : (
+            <div className="settings__login--wrapper">
+              <img
+                alt="login"
+                src="https://summarist.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogin.e313e580.png&w=1080&q=75"
+                decoding="async"
+                data-nimg="1"
+                loading="lazy"
+                width="1033"
+                height="712"
+              />
+              <div className="settings__login--text">
+                Log in to your account to see your details.
+              </div>
+              <button className="btn settings__login--btn" onClick={openModal}>
+                Login
+              </button>
+            </div>
+          )}
         </div>
       </div>
+      {isModalOpen && (
+        <div
+          className="dimmed"
+          ref={modal__dimRef}
+          onClick={handleOverlayClick}
+        >
+          <LogInModal openModal={openModal} />
+        </div>
+      )}
     </div>
   );
 }

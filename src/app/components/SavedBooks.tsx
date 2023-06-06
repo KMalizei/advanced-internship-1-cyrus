@@ -56,89 +56,56 @@ export default function SavedBooks({
     event.stopPropagation();
     onDeleteBook(bookId);
   };
-  console.log(savedBooks.length);
 
   return (
     <>
-      {isLoading ? (
-        <>
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div className="for-you__recommended--books-link" key={index}>
-              <RecommendedSkeleton />
-            </div>
-          ))}
-        </>
-      ) : (
-        <>
-          {savedBooks.map((book) => {
-            if (!book || !book.id) {
-              return null;
-            }
-            const audioId = `audio_${book.id}`;
-            return (
-              <>
-                <div
-                  key={book.id}
-                  className="for-you__recommended--books-link"
-                  // href={`/book/${book.id}`}
-                >
-                  <a className="trash__icon">
-                    <IoTrashOutline
-                      className="delete-icon"
-                      onClick={(event) => handleDeleteBook(event, book.id)}
-                    />
-                  </a>
-                  <a href={`/book/${book.id}`}>
-                    {book.subscriptionRequired && (
-                      <div className="book__pill">Premium</div>
-                    )}
-                    <audio
-                      src={book.audioLink}
-                      ref={(audioRef) =>
-                        (audioRefs.current[audioId] = audioRef)
-                      }
-                      onLoadedMetadata={() => onLoadedMetadata(audioId)}
-                      className="no__display"
-                    />
-                    <figure className="book__image--wrapper">
-                      <img
-                        className="book__image"
-                        src={book.imageLink}
-                        alt="book"
-                      />
-                    </figure>
-                    <div className="recommended__book--title">{book.title}</div>
-                    <div className="recommended__book--author">
-                      {book.author}
-                    </div>
-                    <div className="recommended__book--sub-title">
-                      {book.subTitle}
-                    </div>
-                    <div className="recommended__book--details-wrapper">
-                      <div className="recommended__book--details">
-                        <div className="recommended__book--details-icon">
-                          <AiOutlineClockCircle />
-                        </div>
-                        <div className="recommended__book--details-text">
-                          {formatTime(audioDurations[audioId])}
-                        </div>
-                      </div>
-                      <div className="recommended__book--details">
-                        <div className="recommended__book--details-icon">
-                          <AiOutlineStar />
-                        </div>
-                        <div className="recommended__book--details-text">
-                          {book.averageRating}
-                        </div>
-                      </div>
-                    </div>
-                  </a>
+      {savedBooks.map((book) => (
+        <div key={book.id} className="for-you__recommended--books-link">
+          <a className="trash__icon">
+            <IoTrashOutline
+              className="delete-icon"
+              onClick={(event) => handleDeleteBook(event, book.id)}
+            />
+          </a>
+          <a href={`/book/${book.id}`}>
+            {book.subscriptionRequired && (
+              <div className="book__pill">Premium</div>
+            )}
+            <audio
+              src={book.audioLink}
+              ref={(audioRef) =>
+                (audioRefs.current[`audio_${book.id}`] = audioRef)
+              }
+              onLoadedMetadata={() => onLoadedMetadata(`audio_${book.id}`)}
+              className="no__display"
+            />
+            <figure className="book__image--wrapper">
+              <img className="book__image" src={book.imageLink} alt="book" />
+            </figure>
+            <div className="recommended__book--title">{book.title}</div>
+            <div className="recommended__book--author">{book.author}</div>
+            <div className="recommended__book--sub-title">{book.subTitle}</div>
+            <div className="recommended__book--details-wrapper">
+              <div className="recommended__book--details">
+                <div className="recommended__book--details-icon">
+                  <AiOutlineClockCircle />
                 </div>
-              </>
-            );
-          })}
-        </>
-      )}
+                <div className="recommended__book--details-text">
+                  {formatTime(audioDurations[`audio_${book.id}`])}
+                </div>
+              </div>
+              <div className="recommended__book--details">
+                <div className="recommended__book--details-icon">
+                  <AiOutlineStar />
+                </div>
+                <div className="recommended__book--details-text">
+                  {book.averageRating}
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      ))}
     </>
   );
 }

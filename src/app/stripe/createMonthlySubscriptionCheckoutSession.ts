@@ -21,8 +21,8 @@ export default async function createYearlySubscriptionCheckoutSession(
     collection(firestore, "users", uid, "checkout_sessions"),
     {
       price: "price_1NFBOaD7glSKtpchYCNoKAEB",
-      success_url: window.location.origin,
-      cancel_url: window.location.origin,
+      success_url: window.location.origin + "/success",
+      cancel_url: window.location.origin + "/settings",
     }
   );
 

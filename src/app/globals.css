@@ -1748,6 +1748,19 @@ BOOK INFO PAGE
   color: #032b41;
   animation: spin 1s linear infinite;
 }
+.log__in--spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.log__in--spinner svg {
+  width: 24px;
+  height: 24px;
+  color: #032b41;
+  animation: spin 1s linear infinite;
+}
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -2045,16 +2058,21 @@ PLANS
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-30%, -30%);
+  transform: translate(-55%, -55%);
   font-size: 32px;
   color: #394547;
   line-height: 1.5;
   margin-bottom: 32px;
+  text-align: center;
 }
 .success__page--bg {
   width: 100%;
   height: 100vh;
   background-color: #f1f6f4;
+}
+.spinner__position {
+  position: fixed;
+  top: 10%;
 }
 @media (max-width: 768px) {
   .accordion__title {

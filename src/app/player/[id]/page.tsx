@@ -81,49 +81,49 @@ function Page() {
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
-      {isLoading && (
+      {isLoading ? (
         <>
           <PlayerSkeleton />
         </>
-      )}
-      ;
-      <div
-        className={`modal__dim ${isModalOpen ? "dimmed" : ""}`}
-        ref={modal__dimRef}
-        onClick={handleOverlayClick}
-      >
-        <div className="summary">
-          {isModalOpen ? <LogInModal openModal={openModal} /> : <></>}
-          <div className="audio__book--summary" style={{ fontSize: "16px" }}>
-            <div className="audio__book--summary-title">
-              <b>{book?.title}</b>
-            </div>
-            {!isUserAuth ? (
-              <>
-                <div className="audio__book--summary-text">
-                  {book?.summary.slice(0, 550)} ...
-                </div>
-                <a className="log-in__player--text" onClick={openModal}>
-                  {" "}
-                  <br /> Please{" "}
-                  <u className="log-in__player--underline">Login</u> To Continue
-                  Reading
-                </a>
-              </>
-            ) : (
-              <div className="audio__book--summary-text">{book?.summary}</div>
-            )}
-            <>
-              <div className="audio__wrapper">
-                <AudioPlayer
-                  book={book}
-                  onAudioEnded={() => addFinishedBook(book!.id)}
-                />
+      ) : (
+        <div
+          className={`modal__dim ${isModalOpen ? "dimmed" : ""}`}
+          ref={modal__dimRef}
+          onClick={handleOverlayClick}
+        >
+          <div className="summary">
+            {isModalOpen ? <LogInModal openModal={openModal} /> : <></>}
+            <div className="audio__book--summary" style={{ fontSize: "16px" }}>
+              <div className="audio__book--summary-title">
+                <b>{book?.title}</b>
               </div>
-            </>
+              {!isUserAuth ? (
+                <>
+                  <div className="audio__book--summary-text">
+                    {book?.summary.slice(0, 550)} ...
+                  </div>
+                  <a className="log-in__player--text" onClick={openModal}>
+                    {" "}
+                    <br /> Please{" "}
+                    <u className="log-in__player--underline">Login</u> To
+                    Continue Reading
+                  </a>
+                </>
+              ) : (
+                <div className="audio__book--summary-text">{book?.summary}</div>
+              )}
+              <>
+                <div className="audio__wrapper">
+                  <AudioPlayer
+                    book={book}
+                    onAudioEnded={() => addFinishedBook(book!.id)}
+                  />
+                </div>
+              </>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

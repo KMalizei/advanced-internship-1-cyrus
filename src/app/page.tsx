@@ -9,9 +9,11 @@ import LogInModal from "./components/UI/LogInModal";
 import { useAuthStore } from "./utilities/authStore";
 import { useRouter } from "next/navigation";
 import Footer from "./components/Footer";
+import { FaSpinner } from "react-icons/fa";
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const router = useRouter();
@@ -19,6 +21,9 @@ export default function Home() {
 
   function openModal() {
     setModalOpen(!isModalOpen);
+    if (isModalOpen === false) {
+      setIsLoading(true);
+    }
   }
 
   function handleOverlayClick(event: any) {
@@ -81,7 +86,13 @@ export default function Home() {
                     and even people who don{`'`}t like to read.
                   </div>
                   <button className="btn home__cta--btn" onClick={openModal}>
-                    Login
+                    {isLoading ? (
+                      <div className="log__in--spinner">
+                        <FaSpinner />
+                      </div>
+                    ) : (
+                      <>Login</>
+                    )}
                   </button>
                 </div>
                 <figure className="landing__image--mask">
