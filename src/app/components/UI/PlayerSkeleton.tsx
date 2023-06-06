@@ -9,7 +9,7 @@ export default function PlayerSkeleton() {
           <svg
             stroke="currentColor"
             fill="currentColor"
-            stroke-width="0"
+            strokeWidth="0"
             version="1.1"
             viewBox="0 0 16 16"
             height="1em"
@@ -104,7 +104,7 @@ export default function PlayerSkeleton() {
             <input
               type="range"
               className="audio__progress--bar"
-              value="0"
+              defaultValue="0"
               max="280.032"
             />
             <div className="audio__time">00:00</div>

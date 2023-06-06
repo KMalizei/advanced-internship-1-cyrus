@@ -46,6 +46,7 @@ function LogInModal({ openModal }: { openModal: any }) {
   const emailLogIn = async (e: any) => {
     try {
       const auth = getAuth();
+      await setPersistence(auth, browserLocalPersistence);
       e.preventDefault();
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
@@ -66,6 +67,7 @@ function LogInModal({ openModal }: { openModal: any }) {
     try {
       e.preventDefault();
       const auth = getAuth();
+      await setPersistence(auth, browserLocalPersistence);
       const email = "guest@gmail.com";
       const password = "guest123";
       await signInWithEmailAndPassword(auth, email, password);
@@ -86,6 +88,7 @@ function LogInModal({ openModal }: { openModal: any }) {
   const googleLogIn = async (e: any) => {
     try {
       const auth = getAuth();
+      await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       const user = auth.currentUser;

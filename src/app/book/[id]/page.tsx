@@ -64,6 +64,11 @@ const Page = () => {
   const user = getAuth().currentUser;
   userIsPremium = usePremiumStatus(user);
 
+  useEffect(() => {
+    fetchBookData();
+    checkIfBookIsBookmarked();
+  }, [fetchBookData]);
+
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;
 
   const openModal = () => {
@@ -120,33 +125,34 @@ const Page = () => {
     setDuration(seconds);
   };
 
+  const checkIfBookIsBookmarked = async () => {
+    try {
+      const user = getAuth().currentUser;
+      const bookId = params.id;
+      if (user) {
+        const docRef = doc(db, "users", user.uid, "library", bookId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setIsBookmarked(true);
+        } else {
+          setIsBookmarked(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking if book is bookmarked:", error);
+    }
+  };
+
   const handleSaveToLibrary = async () => {
     try {
       const user = getAuth().currentUser;
-      // Create a new document in the "library" collection with the book ID as the document ID
-      const bookId = params.id; // Assuming `params.id` is the book ID
+      const bookId = params.id;
       await setDoc(doc(db, "users", user!.uid, "library", bookId), {
         bookId: bookId,
       });
       setIsBookmarked(true);
     } catch (error) {
       console.error("Error saving book to library:", error);
-    }
-  };
-
-  const checkIfBookIsBookmarked = async () => {
-    try {
-      const user = getAuth().currentUser;
-      const bookId = params.id;
-      const docRef = doc(db, "users", user!.uid, "library", bookId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setIsBookmarked(true);
-      } else {
-        setIsBookmarked(false);
-      }
-    } catch (error) {
-      console.error("Error checking if book is bookmarked:", error);
     }
   };
 
@@ -161,11 +167,6 @@ const Page = () => {
       console.error("Error removing book from library:", error);
     }
   };
-
-  useEffect(() => {
-    fetchBookData();
-    checkIfBookIsBookmarked();
-  }, []);
 
   return (
     <>
@@ -277,7 +278,11 @@ const Page = () => {
                   </div>
                   <div
                     className="inner-book__bookmark"
-                    onClick={isBookmarked ? handleRemoveFromLibrary : handleSaveToLibrary}
+                    onClick={
+                      isBookmarked
+                        ? handleRemoveFromLibrary
+                        : handleSaveToLibrary
+                    }
                   >
                     <div className="inner-book__bookmark--icon">
                       {isBookmarked ? <IoBookmark /> : <IoBookmarkOutline />}

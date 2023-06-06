@@ -1,16 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import SideBar from "@/app/components/SideBar";
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import SearchBar from "@/app/components/SearchBar";
 import { useAuthStore } from "@/app/utilities/authStore";
 import LogInModal from "@/app/components/UI/LogInModal";
-import AudioPlayer from "@/app/components/UI/AudioPlayer";
+import AudioPlayer from "@/app/components/AudioPlayer";
 import PlayerSkeleton from "@/app/components/UI/PlayerSkeleton";
-import { auth } from "@/app/firebase";
 import SidebarSizing from "@/app/components/UI/SidebarSizing";
+import { useBookStore } from "@/app/utilities/bookStore";
 
 interface Book {
   id: string;
@@ -38,12 +37,13 @@ function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const modal__dimRef = useRef<HTMLDivElement>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const params = useParams();
   const authStore = useAuthStore();
-  const router = useRouter();
   const isUserAuth = authStore?.isUserAuth;
+  const { addFinishedBook } = useBookStore();
+
   const API__URL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${params.id}`;
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -69,11 +69,11 @@ function Page() {
     if (isUserAuth === false) {
       openModal();
     }
-  });
+  }, [isUserAuth]);
 
   useEffect(() => {
     getBook();
-  });
+  }, []);
 
   return (
     <>
@@ -115,7 +115,10 @@ function Page() {
             )}
             <>
               <div className="audio__wrapper">
-                <AudioPlayer book={book} />
+                <AudioPlayer
+                  book={book}
+                  onAudioEnded={() => addFinishedBook(book!.id)}
+                />
               </div>
             </>
           </div>

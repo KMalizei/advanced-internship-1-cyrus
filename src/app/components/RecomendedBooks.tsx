@@ -68,7 +68,7 @@ export default function RecommendedBooks({
     <>
       {isLoading ? (
         <>
-          {Array.from({ length: 3 }).map((_, index) => (
+          {Array.from({ length: 6 }).map((_, index) => (
             <div className="for-you__recommended--books-link" key={index}>
               <RecommendedSkeleton />
             </div>

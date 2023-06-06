@@ -35,19 +35,16 @@ interface SelectedBook {
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [duration, setDuration] = useState(0);
-  const audioRef = useRef<any | undefined>();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
   const [audioDurations, setAudioDurations] = useState<{
     [id: string]: number;
   }>({});
   const audioRefs: MutableRefObject<{ [id: string]: HTMLAudioElement | null }> =
     useRef({});
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const selectedBookQuery = async () => {
     const { data } = await axios.get(
