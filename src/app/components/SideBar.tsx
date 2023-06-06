@@ -11,7 +11,7 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { IoBookmarkOutline } from "react-icons/io5";
-import { RiBallPenLine, RiFileUploadLine } from "react-icons/ri";
+import { RiBallPenLine } from "react-icons/ri";
 import { RxDownload, RxLetterCaseCapitalize, RxUpload } from "react-icons/rx";
 import { BsGear } from "react-icons/bs";
 
@@ -20,14 +20,20 @@ interface SideBarProps {
 }
 
 const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fontSizes, setFontSizes] = useState("font1");
-
+  const [fontSizeElement, setFontSizeElement] = useState<Element | null>(null);
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
   const params = useParams();
-  const fontSize = document.querySelector(".audio__book--summary-text");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fontSizes, setFontSizes] = useState("font1");
+
+  useEffect(() => {
+    if (typeof document !== "undefined" && typeof window !== "undefined") {
+      const element = document.querySelector(".audio__book--summary-text");
+      setFontSizeElement(element);
+    }
+  }, []);
 
   function openModal() {
     setIsModalOpen(!isModalOpen);
@@ -42,38 +48,38 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   function smallFontSize() {
     removeFontSize();
     setFontSizes("font1");
-    fontSize?.classList.add("font1");
+    fontSizeElement?.classList.add("font1");
   }
 
   function mediumFontSize() {
     removeFontSize();
     setFontSizes("font2");
-    fontSize?.classList.add("font2");
+    fontSizeElement?.classList.add("font2");
   }
 
   function largeFontSize() {
     removeFontSize();
     setFontSizes("font3");
-    fontSize?.classList.add("font3");
+    fontSizeElement?.classList.add("font3");
   }
 
   function xlFontSize() {
     removeFontSize();
     setFontSizes("font4");
-    fontSize?.classList.add("font4");
+    fontSizeElement?.classList.add("font4");
   }
 
   function removeFontSize() {
-    fontSize?.classList.remove("font1");
-    fontSize?.classList.remove("font2");
-    fontSize?.classList.remove("font3");
-    fontSize?.classList.remove("font4");
+    fontSizeElement?.classList.remove("font1");
+    fontSizeElement?.classList.remove("font2");
+    fontSizeElement?.classList.remove("font3");
+    fontSizeElement?.classList.remove("font4");
   }
 
   const logUserOut = () => {
     auth.signOut();
     authStore.setIsUserAuth(false);
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
       localStorage.removeItem("email-storage");
       localStorage.removeItem("auth-storage");
     }
