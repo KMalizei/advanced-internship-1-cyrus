@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import { FaSpinner } from "react-icons/fa";
 
 export default function Home() {
+  ssr: false;
   const [isModalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const modal__dimRef = useRef(null);
