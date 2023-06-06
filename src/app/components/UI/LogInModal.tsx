@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 import {
@@ -120,9 +121,11 @@ function LogInModal({ openModal }: { openModal: any }) {
 
   const loginAuthSuccess = () => {
     const user = getAuth().currentUser;
-    localStorage.setItem("email-storage", user?.email || "");
-    localStorage.setItem("auth-storage", "true");
-    localStorage.setItem("uid-storage", user?.uid || "");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("email-storage", user?.email || "");
+      localStorage.setItem("auth-storage", "true");
+      localStorage.setItem("uid-storage", user?.uid || "");
+    }
     authStore.setIsUserAuth(true);
     emailStore.setEmail(user?.email || "");
   };

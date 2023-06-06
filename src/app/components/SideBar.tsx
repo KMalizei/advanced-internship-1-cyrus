@@ -73,8 +73,10 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   const logUserOut = () => {
     auth.signOut();
     authStore.setIsUserAuth(false);
-    localStorage.removeItem("auth-storage");
-    localStorage.removeItem("email-storage");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("email-storage");
+      localStorage.removeItem("auth-storage");
+    }
   };
 
   return (
