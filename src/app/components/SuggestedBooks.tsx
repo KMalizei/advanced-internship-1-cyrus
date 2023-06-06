@@ -54,7 +54,7 @@ export default function SuggestedBooks({
     recommendBookQuery();
   }, []);
 
-  const formatTime = (duration: number | undefined) => {
+  const formatTime = (duration: number | null) => {
     if (duration && !isNaN(duration)) {
       const minutes = Math.floor(duration / 60);
       const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;

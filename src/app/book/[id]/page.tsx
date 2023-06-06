@@ -39,7 +39,7 @@ interface Book {
   bookDescription: string;
   authorDescription: string;
   duration: any;
-  audioRef: MutableRefObject<any | undefined>;
+  audioRef: MutableRefObject<any | null>;
   setDuration: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -52,7 +52,7 @@ const Page = () => {
   const modal__dimRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const params = useParams();
-  const audioRef = useRef<any | undefined>();
+  const audioRef = useRef<any | null>();
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);

@@ -21,7 +21,7 @@ const AudioControls = ({
   setTimeProgress,
 }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const playAnimationRef = useRef<number | undefined>();
+  const playAnimationRef = useRef<number | null>();
 
   const repeat = useCallback(() => {
     const currentTime: number = audioRef?.current?.currentTime;

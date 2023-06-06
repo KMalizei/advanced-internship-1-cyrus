@@ -11,9 +11,6 @@ import SidebarSizing from "../components/UI/SidebarSizing";
 import Skeleton from "../components/UI/Skeleton";
 
 function UserSettings() {
-  // const [userIsPremium, setUserIsPremium] = useState<boolean | undefined>(
-  //   undefined
-  // );
   const [email, setEmail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
