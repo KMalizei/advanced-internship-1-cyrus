@@ -1,7 +1,5 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import SearchBar from "@/app/components/SearchBar";
-import SideBar from "@/app/components/SideBar";
 import axios from "axios";
 import React, { useEffect, useState, useRef, MutableRefObject } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -14,11 +12,11 @@ import {
   AiOutlineStar,
 } from "react-icons/ai";
 import { BiMicrophone } from "react-icons/bi";
-import { IoBookOutline, IoBookmarkOutline } from "react-icons/io5";
+import { IoBookOutline, IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import SidebarSizing from "@/app/components/UI/SidebarSizing";
 import usePremiumStatus from "@/app/stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
 
 interface Book {
@@ -58,9 +56,6 @@ const Page = () => {
   const isUserAuth = authStore.isUserAuth;
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
-
-  
-
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -129,14 +124,47 @@ const Page = () => {
       const user = getAuth().currentUser;
       // Create a new document in the "library" collection with the book ID as the document ID
       const bookId = params.id; // Assuming `params.id` is the book ID
-      await setDoc(doc(db, 'users', user!.uid, "library", bookId), {
-        bookId: bookId
+      await setDoc(doc(db, "users", user!.uid, "library", bookId), {
+        bookId: bookId,
       });
       setIsBookmarked(true);
     } catch (error) {
-      console.error('Error saving book to library:', error);
+      console.error("Error saving book to library:", error);
     }
   };
+
+  const checkIfBookIsBookmarked = async () => {
+    try {
+      const user = getAuth().currentUser;
+      const bookId = params.id;
+      const docRef = doc(db, "users", user!.uid, "library", bookId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setIsBookmarked(true);
+      } else {
+        setIsBookmarked(false);
+      }
+    } catch (error) {
+      console.error("Error checking if book is bookmarked:", error);
+    }
+  };
+
+  const handleRemoveFromLibrary = async () => {
+    try {
+      const user = getAuth().currentUser;
+      const bookId = params.id;
+      const docRef = doc(db, "users", user!.uid, "library", bookId);
+      await deleteDoc(docRef);
+      setIsBookmarked(false);
+    } catch (error) {
+      console.error("Error removing book from library:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookData();
+    checkIfBookIsBookmarked();
+  }, []);
 
   return (
     <>
@@ -246,12 +274,15 @@ const Page = () => {
                       <div className="inner-book__read--text">Listen</div>
                     </button>
                   </div>
-                  <div className="inner-book__bookmark" onClick={handleSaveToLibrary}>
+                  <div
+                    className="inner-book__bookmark"
+                    onClick={isBookmarked ? handleRemoveFromLibrary : handleSaveToLibrary}
+                  >
                     <div className="inner-book__bookmark--icon">
-                      <IoBookmarkOutline />
+                      {isBookmarked ? <IoBookmark /> : <IoBookmarkOutline />}
                     </div>
                     <div className="inner-book__bookmark--text">
-                    {isBookmarked ? 'Book saved!' : 'Add title to My Library'}
+                      {isBookmarked ? "Book saved!" : "Add title to My Library"}
                     </div>
                   </div>
                   <div className="inner-book__secondary--title">

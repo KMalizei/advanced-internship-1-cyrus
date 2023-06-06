@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useEffect} from "react";
 import axios from "axios";
@@ -25,7 +26,7 @@ function Library() {
       <div className="row">
         <div className="container">
           <div className="for-you__title">Saved Books</div>
-          <div className="for-you__sub--title">"2" "items" "s"</div>
+          <div className="for-you__sub--title">&quot;2&quot; &quot;items&quot; &quot;s&quot;</div>
           <div className="for-you__recommended--books">
             <a
               className="for-you__recommended--books-link"
@@ -151,7 +152,7 @@ function Library() {
             </a>
           </div>
           <div className="for-you__title">Finished</div>
-          <div className="for-you__sub--title">"1" "Item</div>
+          <div className="for-you__sub--title">&quot;1&quot; Item</div>
           <div className="for-you__recommended--books">
             <a
               className="for-you__recommended--books-link"
