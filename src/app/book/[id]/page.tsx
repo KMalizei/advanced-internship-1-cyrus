@@ -18,6 +18,8 @@ import { IoBookOutline, IoBookmarkOutline } from "react-icons/io5";
 import SidebarSizing from "@/app/components/UI/SidebarSizing";
 import usePremiumStatus from "@/app/stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/app/firebase";
 
 interface Book {
   id: string;
@@ -55,6 +57,10 @@ const Page = () => {
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -116,6 +122,20 @@ const Page = () => {
   const onLoadedMetadata = () => {
     const seconds = audioRef.current.duration;
     setDuration(seconds);
+  };
+
+  const handleSaveToLibrary = async () => {
+    try {
+      const user = getAuth().currentUser;
+      // Create a new document in the "library" collection with the book ID as the document ID
+      const bookId = params.id; // Assuming `params.id` is the book ID
+      await setDoc(doc(db, 'users', user!.uid, "library", bookId), {
+        bookId: bookId
+      });
+      setIsBookmarked(true);
+    } catch (error) {
+      console.error('Error saving book to library:', error);
+    }
   };
 
   return (
@@ -226,12 +246,12 @@ const Page = () => {
                       <div className="inner-book__read--text">Listen</div>
                     </button>
                   </div>
-                  <div className="inner-book__bookmark">
+                  <div className="inner-book__bookmark" onClick={handleSaveToLibrary}>
                     <div className="inner-book__bookmark--icon">
                       <IoBookmarkOutline />
                     </div>
                     <div className="inner-book__bookmark--text">
-                      Add title to My Library
+                    {isBookmarked ? 'Book saved!' : 'Add title to My Library'}
                     </div>
                   </div>
                   <div className="inner-book__secondary--title">
