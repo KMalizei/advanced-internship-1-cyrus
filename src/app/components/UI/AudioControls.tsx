@@ -1,5 +1,5 @@
-import React, { MutableRefObject } from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { MutableRefObject, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   IoPlayBackSharp,
   IoPlayForwardSharp,
@@ -26,14 +26,8 @@ const AudioControls = ({
   const repeat = useCallback(() => {
     const currentTime: number = audioRef?.current?.currentTime;
     setTimeProgress(currentTime);
-    progressBarRef.current.value = currentTime;
-    progressBarRef.current.style.setProperty(
-      "--range-progress",
-      `${(progressBarRef.current.value / duration) * 100}%`
-    );
-
     playAnimationRef.current = requestAnimationFrame(repeat);
-  }, [audioRef, duration, progressBarRef, setTimeProgress]);
+  }, [audioRef, setTimeProgress]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -43,10 +37,6 @@ const AudioControls = ({
     }
     playAnimationRef.current = requestAnimationFrame(repeat);
   }, [isPlaying, audioRef, repeat]);
-
-  const togglePlayPause = () => {
-    setIsPlaying((prev) => !prev);
-  };
 
   useEffect(() => {
     const endOfAudio = () => {
@@ -58,6 +48,10 @@ const AudioControls = ({
     audioRef.current.addEventListener("ended", endOfAudio);
   }, [audioRef, progressBarRef, setTimeProgress]);
 
+  const togglePlayPause = () => {
+    setIsPlaying((prev) => !prev);
+  };
+
   const skipBackward = () => {
     audioRef.current.currentTime -= 5;
   };
@@ -65,6 +59,16 @@ const AudioControls = ({
   const skipForward = () => {
     audioRef.current.currentTime += 5;
   };
+
+  useEffect(() => {
+    if (progressBarRef.current) {
+      progressBarRef.current.value = setTimeProgress;
+      progressBarRef.current.style.setProperty(
+        "--range-progress",
+        `${(progressBarRef.current.value / duration) * 100}%`
+      );
+    }
+  }, [setTimeProgress, duration, progressBarRef]);
 
   return (
     <div>
