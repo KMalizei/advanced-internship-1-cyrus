@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import RecommendedSkeleton from "./UI/RecommendedSkeleton";

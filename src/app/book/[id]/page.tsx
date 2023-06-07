@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import axios from "axios";
 import React, { useEffect, useState, useRef, MutableRefObject } from "react";
@@ -147,10 +147,12 @@ const Page = () => {
     try {
       const user = getAuth().currentUser;
       const bookId = params.id;
-      await setDoc(doc(db, "users", user!.uid, "library", bookId), {
-        bookId: bookId,
-      });
-      setIsBookmarked(true);
+      if (user) {
+        await setDoc(doc(db, "users", user.uid, "library", bookId), {
+          bookId: bookId,
+        });
+        setIsBookmarked(true);
+      }
     } catch (error) {
       console.error("Error saving book to library:", error);
     }
@@ -160,9 +162,11 @@ const Page = () => {
     try {
       const user = getAuth().currentUser;
       const bookId = params.id;
-      const docRef = doc(db, "users", user!.uid, "library", bookId);
-      await deleteDoc(docRef);
-      setIsBookmarked(false);
+      if (user) {
+        const docRef = doc(db, "users", user.uid, "library", bookId);
+        await deleteDoc(docRef);
+        setIsBookmarked(false);
+      }
     } catch (error) {
       console.error("Error removing book from library:", error);
     }
@@ -189,7 +193,6 @@ const Page = () => {
 
             <div className="row">
               <div className="container">
-                {/* <SideBar /> */}
                 <BookSkeleton />
               </div>
             </div>
@@ -201,8 +204,6 @@ const Page = () => {
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
-          {/* <SearchBar />
-          <SideBar /> */}
           <div className="row">
             <div className="container">
               <div className="inner__wrapper">

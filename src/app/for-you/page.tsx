@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
 import RecommendedBooks from "../components/RecomendedBooks";
 import SuggestedBooks from "../components/SuggestedBooks";
 import axios from "axios";
@@ -48,7 +47,6 @@ function Page() {
     const { data } = await axios.get(
       "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected"
     );
-    console.log(data);
     setSelectedBook(data);
     setIsLoading(false);
   };

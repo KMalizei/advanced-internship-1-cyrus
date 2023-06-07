@@ -33,11 +33,10 @@ function AudioPlayer({ book, onAudioEnded }: AudioPlayerProps) {
   const [timeProgress, setTimeProgress] = React.useState(0);
   const [duration, setDuration] = React.useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (book && audioRef.current) {
-      // Update audio source when the book changes
       audioRef.current.src = book.audioLink;
       audioRef.current.load();
     }

@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, MutableRefObject, useRef } from "react";
 import SavedBooks from "../components/SavedBooks";
 import SidebarSizing from "../components/UI/SidebarSizing";
@@ -22,6 +22,7 @@ interface ArrayInterface {
 function Library() {
   const user = getAuth().currentUser;
   const authStore = useAuthStore();
+  const [isClient, setIsClient] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const skeletonArray = Array.from({ length: 6 });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +41,10 @@ function Library() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   function openModal() {
     setIsModalOpen(!isModalOpen);
@@ -179,7 +184,7 @@ function Library() {
       />
       <div className="row">
         <div className="container">
-          {isUserAuth ? (
+          {isClient && isUserAuth ? (
             <>
               <div className="for-you__title">Saved Books</div>
               <div className="for-you__sub--title">
@@ -191,14 +196,16 @@ function Library() {
                 <div className="for-you__recommended--books">
                   {isLoading ? (
                     <>
-                      {Array.from({ length: savedBooks.length }).map((_, index) => (
-                        <div
-                          className="for-you__recommended--books-link"
-                          key={index}
-                        >
-                          <RecommendedSkeleton />
-                        </div>
-                      ))}
+                      {Array.from({ length: savedBooks.length }).map(
+                        (_, index) => (
+                          <div
+                            className="for-you__recommended--books-link"
+                            key={index}
+                          >
+                            <RecommendedSkeleton />
+                          </div>
+                        )
+                      )}
                     </>
                   ) : (
                     <>

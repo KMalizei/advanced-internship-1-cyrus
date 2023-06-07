@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
 import React, { useEffect, useState, useRef } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import LogInModal from "../components/UI/LogInModal";

@@ -1,4 +1,4 @@
-"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useRef, useEffect } from "react";
 import LogInModal from "./UI/LogInModal";
@@ -12,15 +12,17 @@ import {
 } from "react-icons/ai";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { RiBallPenLine } from "react-icons/ri";
-import { RxDownload, RxLetterCaseCapitalize, RxUpload } from "react-icons/rx";
+import { RxLetterCaseCapitalize } from "react-icons/rx";
 import { BsGear } from "react-icons/bs";
 import Link from "next/link";
+import { BiDownload, BiUpload } from "react-icons/bi";
 
 interface SideBarProps {
   isSidebarOpen: boolean;
 }
 
 const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
+  const [isClient, setIsClient] = useState(false);
   const [fontSizeElement, setFontSizeElement] = useState<Element | null>(null);
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
@@ -32,10 +34,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (typeof document !== "undefined" && typeof window !== "undefined") {
-      const element = document.querySelector(".audio__book--summary-text");
-      setFontSizeElement(element);
-    }
+    setIsClient(true);
   }, []);
 
   function openModal() {
@@ -50,26 +49,42 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
 
   function smallFontSize() {
     removeFontSize();
-    setFontSizes("font1");
-    fontSizeElement?.classList.add("font1");
+    if (typeof document !== "undefined" && typeof window !== "undefined") {
+      const fontSize = document.querySelector(".audio__book--summary-text");
+      setFontSizes("font1");
+      fontSize?.classList.add("font1");
+      setFontSizeElement(fontSize);
+    }
   }
 
   function mediumFontSize() {
     removeFontSize();
-    setFontSizes("font2");
-    fontSizeElement?.classList.add("font2");
+    if (typeof document !== "undefined" && typeof window !== "undefined") {
+      const fontSize = document.querySelector(".audio__book--summary-text");
+      setFontSizes("font2");
+      fontSize?.classList.add("font2");
+      setFontSizeElement(fontSize);
+    }
   }
 
   function largeFontSize() {
     removeFontSize();
-    setFontSizes("font3");
-    fontSizeElement?.classList.add("font3");
+    if (typeof document !== "undefined" && typeof window !== "undefined") {
+      const fontSize = document.querySelector(".audio__book--summary-text");
+      setFontSizes("font3");
+      fontSize?.classList.add("font3");
+      setFontSizeElement(fontSize);
+    }
   }
 
   function xlFontSize() {
     removeFontSize();
-    setFontSizes("font4");
-    fontSizeElement?.classList.add("font4");
+    if (typeof document !== "undefined" && typeof window !== "undefined") {
+      const fontSize = document.querySelector(".audio__book--summary-text");
+      setFontSizes("font4");
+      fontSize?.classList.add("font4");
+      setFontSizeElement(fontSize);
+    }
   }
 
   function removeFontSize() {
@@ -192,7 +207,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
               <Link className="sidebar__link--wrapper" href="/settings">
                 <div
                   className={`sidebar__link--line ${
-                    pathname === `/player/${params.id}` ? `active--tab` : ""
+                    pathname === `/settings` ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
@@ -208,12 +223,12 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
                 <div className="sidebar__link--text">Help &amp; Support</div>
               </div>
               <div>
-                {isUserAuth === true ? (
+                {isClient && isUserAuth === true ? (
                   <div className="sidebar__link--wrapper" onClick={logUserOut}>
                     <div className="sidebar__link--line "></div>
                     <div className="sidebar__icon--wrapper">
                       <div className="rotate-90">
-                        <RxUpload />
+                        <BiUpload />
                       </div>
                     </div>
                     <div className="sidebar__link--text">Logout</div>
@@ -223,7 +238,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
                     <div className="sidebar__link--line "></div>
                     <div className="sidebar__icon--wrapper">
                       <div className="rotate-90">
-                        <RxDownload />
+                        <BiDownload />
                       </div>
                     </div>
                     <div className="sidebar__link--text">Log In</div>

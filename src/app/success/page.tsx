@@ -10,7 +10,6 @@ function SuccessPage() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log(user);
       if (user) {
         user
           .getIdToken(true)

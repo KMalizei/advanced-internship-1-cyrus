@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { AiFillBulb, AiFillFileText, AiFillAudio } from "react-icons/ai";
 import { BsStarHalf, BsStarFill } from "react-icons/bs";
@@ -12,7 +11,6 @@ import Footer from "./components/Footer";
 import { FaSpinner } from "react-icons/fa";
 
 export default function Home() {
-  ssr: false;
   const [isModalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const modal__dimRef = useRef(null);
