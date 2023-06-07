@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+"use client"
 import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import { IoDocumentTextSharp } from "react-icons/io5";

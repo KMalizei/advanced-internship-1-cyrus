@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+"use client"
 import React, { useState, useRef, useEffect } from "react";
 import { AiFillBulb, AiFillFileText, AiFillAudio } from "react-icons/ai";
 import { BsStarHalf, BsStarFill } from "react-icons/bs";

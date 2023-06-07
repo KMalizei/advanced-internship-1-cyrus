@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+"use client"
 import RecommendedBooks from "../components/RecomendedBooks";
 import SuggestedBooks from "../components/SuggestedBooks";
 import axios from "axios";

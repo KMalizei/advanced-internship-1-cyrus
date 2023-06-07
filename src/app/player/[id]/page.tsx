@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
+"use client"
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
