@@ -29,6 +29,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fontSizes, setFontSizes] = useState("font1");
   const router = useRouter();
+  const [currentPath, setCurrentPath] = useState("");
 
   useEffect(() => {
     if (typeof document !== "undefined" && typeof window !== "undefined") {
@@ -46,6 +47,10 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
       openModal();
     }
   }
+
+  useEffect(() => {
+    setCurrentPath(router.pathname);
+  }, []);
 
   function smallFontSize() {
     removeFontSize();
@@ -113,7 +118,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
               <a href="/for-you" className={`sidebar__link--wrapper`}>
                 <div
                   className={`sidebar__link--line ${
-                    router.asPath === "/for-you" ? `active--tab` : ""
+                    currentPath === "/for-you" ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
@@ -124,7 +129,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
               <a className="sidebar__link--wrapper" href="/library">
                 <div
                   className={`sidebar__link--line ${
-                    router.asPath === "/library" ? `active--tab` : ""
+                    currentPath === "/library" ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
@@ -195,9 +200,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
               <a className="sidebar__link--wrapper" href="/settings">
                 <div
                   className={`sidebar__link--line ${
-                    router.asPath === `/player/${params.id}`
-                      ? `active--tab`
-                      : ""
+                    currentPath === `/player/${params.id}` ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
