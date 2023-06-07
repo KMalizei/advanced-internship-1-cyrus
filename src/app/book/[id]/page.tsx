@@ -276,21 +276,36 @@ const Page = () => {
                       <div className="inner-book__read--text">Listen</div>
                     </button>
                   </div>
-                  <div
-                    className="inner-book__bookmark"
-                    onClick={
-                      isBookmarked
-                        ? handleRemoveFromLibrary
-                        : handleSaveToLibrary
-                    }
-                  >
-                    <div className="inner-book__bookmark--icon">
-                      {isBookmarked ? <IoBookmark /> : <IoBookmarkOutline />}
+                  {isUserAuth ? (
+                    <div
+                      className="inner-book__bookmark"
+                      onClick={
+                        isBookmarked
+                          ? handleRemoveFromLibrary
+                          : handleSaveToLibrary
+                      }
+                    >
+                      <div className="inner-book__bookmark--icon">
+                        {isBookmarked ? <IoBookmark /> : <IoBookmarkOutline />}
+                      </div>
+                      <div className="inner-book__bookmark--text">
+                        {isBookmarked
+                          ? "Book saved!"
+                          : "Add title to My Library"}
+                      </div>
                     </div>
-                    <div className="inner-book__bookmark--text">
-                      {isBookmarked ? "Book saved!" : "Add title to My Library"}
+                  ) : (
+                    <div className="inner-book__bookmark" onClick={openModal}>
+                      <div className="inner-book__bookmark--icon">
+                        {isBookmarked ? <IoBookmark /> : <IoBookmarkOutline />}
+                      </div>
+                      <div className="inner-book__bookmark--text">
+                        {isBookmarked
+                          ? "Book saved!"
+                          : "Add title to My Library"}
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="inner-book__secondary--title">
                     What{"'"}s it about?
                   </div>

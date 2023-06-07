@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import SearchBar from "../components/SearchBar";
-import SideBar from "../components/SideBar";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import LogInModal from "../components/UI/LogInModal";
 import usePremiumStatus from "../stripe/usePremiumStatus";

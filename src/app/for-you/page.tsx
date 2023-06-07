@@ -1,7 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import SearchBar from "../components/SearchBar";
-import SideBar from "../components/SideBar";
 import RecommendedBooks from "../components/RecomendedBooks";
 import SuggestedBooks from "../components/SuggestedBooks";
 import axios from "axios";
@@ -77,20 +75,24 @@ function Page() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsSidebarOpen(true);
-      } else {
-        setIsSidebarOpen(false);
+      if (typeof window !== "undefined") {
+        if (window.innerWidth > 768) {
+          setIsSidebarOpen(true);
+        } else {
+          setIsSidebarOpen(false);
+        }
       }
     };
 
     handleResize();
 
-    window.addEventListener("resize", handleResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   }, []);
 
   return (

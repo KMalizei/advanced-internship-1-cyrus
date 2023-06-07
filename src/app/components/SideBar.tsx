@@ -4,30 +4,39 @@ import React, { useState, useRef, useEffect } from "react";
 import LogInModal from "./UI/LogInModal";
 import { auth } from "../firebase";
 import { useAuthStore } from "../utilities/authStore";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import {
   AiOutlineHome,
   AiOutlineQuestionCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
 import { IoBookmarkOutline } from "react-icons/io5";
-import { RiBallPenLine, RiFileUploadLine } from "react-icons/ri";
+import { RiBallPenLine } from "react-icons/ri";
 import { RxDownload, RxLetterCaseCapitalize, RxUpload } from "react-icons/rx";
 import { BsGear } from "react-icons/bs";
+import Link from "next/link";
 
 interface SideBarProps {
-  isSidebarOpen: boolean; // Change the prop name to isSidebarOpen
+  isSidebarOpen: boolean;
 }
 
 const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fontSizes, setFontSizes] = useState("font1");
-
+  const [fontSizeElement, setFontSizeElement] = useState<Element | null>(null);
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const isUserAuth = authStore.isUserAuth;
   const params = useParams();
-  const fontSize = document.querySelector(".audio__book--summary-text");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fontSizes, setFontSizes] = useState("font1");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (typeof document !== "undefined" && typeof window !== "undefined") {
+      const element = document.querySelector(".audio__book--summary-text");
+      setFontSizeElement(element);
+    }
+  }, []);
 
   function openModal() {
     setIsModalOpen(!isModalOpen);
@@ -42,39 +51,37 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   function smallFontSize() {
     removeFontSize();
     setFontSizes("font1");
-    fontSize?.classList.add("font1");
+    fontSizeElement?.classList.add("font1");
   }
 
   function mediumFontSize() {
     removeFontSize();
     setFontSizes("font2");
-    fontSize?.classList.add("font2");
+    fontSizeElement?.classList.add("font2");
   }
 
   function largeFontSize() {
     removeFontSize();
     setFontSizes("font3");
-    fontSize?.classList.add("font3");
+    fontSizeElement?.classList.add("font3");
   }
 
   function xlFontSize() {
     removeFontSize();
     setFontSizes("font4");
-    fontSize?.classList.add("font4");
+    fontSizeElement?.classList.add("font4");
   }
 
   function removeFontSize() {
-    fontSize?.classList.remove("font1");
-    fontSize?.classList.remove("font2");
-    fontSize?.classList.remove("font3");
-    fontSize?.classList.remove("font4");
+    fontSizeElement?.classList.remove("font1");
+    fontSizeElement?.classList.remove("font2");
+    fontSizeElement?.classList.remove("font3");
+    fontSizeElement?.classList.remove("font4");
   }
 
   const logUserOut = () => {
     auth.signOut();
     authStore.setIsUserAuth(false);
-    localStorage.removeItem("auth-storage");
-    localStorage.removeItem("email-storage");
   };
 
   return (
@@ -100,28 +107,28 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
           </div>
           <div className="sidebar__wrapper">
             <div className="sidebar__top">
-              <a href="/for-you" className={`sidebar__link--wrapper`}>
+              <Link href="/for-you" className={`sidebar__link--wrapper`}>
                 <div
                   className={`sidebar__link--line ${
-                    window.location.pathname === "/for-you" ? `active--tab` : ""
+                    pathname === "/for-you" ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
                   <AiOutlineHome />
                 </div>
                 <div className="sidebar__link--text">For You</div>
-              </a>
-              <a className="sidebar__link--wrapper" href="/library">
+              </Link>
+              <Link className="sidebar__link--wrapper" href="/library">
                 <div
                   className={`sidebar__link--line ${
-                    window.location.pathname === "/library" ? `active--tab` : ""
+                    pathname === "/library" ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
                   <IoBookmarkOutline />
                 </div>
                 <div className="sidebar__link--text">My Library</div>
-              </a>
+              </Link>
               <div className="sidebar__link--wrapper sidebar__link--not-allowed">
                 <div className={`sidebar__link--line`}></div>
                 <div className="sidebar__icon--wrapper">
@@ -138,7 +145,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
               </div>
             </div>
             <div className="sidebar__bottom">
-              {window.location.pathname === `/player/${params.id}` ? (
+              {pathname === `/player/${params.id}` ? (
                 <div className="sidebar__link--wrapper sidebar__font--size-wrapper">
                   <div
                     className={`sidebar__link--text sidebar__font--size-icon sidebar__font--size-icon-small font1 ${
@@ -182,19 +189,17 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
                   </div>
                 </div>
               ) : null}
-              <a className="sidebar__link--wrapper" href="/settings">
+              <Link className="sidebar__link--wrapper" href="/settings">
                 <div
                   className={`sidebar__link--line ${
-                    window.location.pathname === "/settings"
-                      ? `active--tab`
-                      : ""
+                    pathname === `/player/${params.id}` ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
                   <BsGear />
                 </div>
                 <div className="sidebar__link--text">Settings</div>
-              </a>
+              </Link>
               <div className="sidebar__link--wrapper sidebar__link--not-allowed">
                 <div className="sidebar__link--line "></div>
                 <div className="sidebar__icon--wrapper">
