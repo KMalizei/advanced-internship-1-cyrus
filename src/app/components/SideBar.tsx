@@ -14,7 +14,7 @@ import { IoBookmarkOutline } from "react-icons/io5";
 import { RiBallPenLine } from "react-icons/ri";
 import { RxDownload, RxLetterCaseCapitalize, RxUpload } from "react-icons/rx";
 import { BsGear } from "react-icons/bs";
-import { useRouter } from "next/router";
+import useRouter from "../../app/utilities/useRouter";
 
 interface SideBarProps {
   isSidebarOpen: boolean; // Change the prop name to isSidebarOpen
