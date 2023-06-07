@@ -75,20 +75,24 @@ function Page() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsSidebarOpen(true);
-      } else {
-        setIsSidebarOpen(false);
+      if (typeof window !== "undefined") {
+        if (window.innerWidth > 768) {
+          setIsSidebarOpen(true);
+        } else {
+          setIsSidebarOpen(false);
+        }
       }
     };
 
     handleResize();
 
-    window.addEventListener("resize", handleResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   }, []);
 
   return (
