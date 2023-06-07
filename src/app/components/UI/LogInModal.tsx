@@ -121,11 +121,6 @@ function LogInModal({ openModal }: { openModal: any }) {
 
   const loginAuthSuccess = () => {
     const user = getAuth().currentUser;
-    if (typeof window !== "undefined" && typeof document !== "undefined") {
-      localStorage.setItem("email-storage", user?.email || "");
-      localStorage.setItem("auth-storage", "true");
-      localStorage.setItem("uid-storage", user?.uid || "");
-    }
     authStore.setIsUserAuth(true);
     emailStore.setEmail(user?.email || "");
   };

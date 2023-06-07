@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import LogInModal from "./UI/LogInModal";
 import { auth } from "../firebase";
 import { useAuthStore } from "../utilities/authStore";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import {
   AiOutlineHome,
   AiOutlineQuestionCircle,
@@ -14,10 +14,10 @@ import { IoBookmarkOutline } from "react-icons/io5";
 import { RiBallPenLine } from "react-icons/ri";
 import { RxDownload, RxLetterCaseCapitalize, RxUpload } from "react-icons/rx";
 import { BsGear } from "react-icons/bs";
-import useRouter from "../../app/utilities/useRouter";
+import Link from "next/link";
 
 interface SideBarProps {
-  isSidebarOpen: boolean; // Change the prop name to isSidebarOpen
+  isSidebarOpen: boolean;
 }
 
 const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
@@ -29,7 +29,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fontSizes, setFontSizes] = useState("font1");
   const router = useRouter();
-  const [currentPath, setCurrentPath] = useState("");
+  const pathname = usePathname();
 
   useEffect(() => {
     if (typeof document !== "undefined" && typeof window !== "undefined") {
@@ -47,10 +47,6 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
       openModal();
     }
   }
-
-  useEffect(() => {
-    setCurrentPath(router.pathname);
-  }, []);
 
   function smallFontSize() {
     removeFontSize();
@@ -86,10 +82,6 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
   const logUserOut = () => {
     auth.signOut();
     authStore.setIsUserAuth(false);
-    if (typeof window !== "undefined" && typeof document !== "undefined") {
-      localStorage.removeItem("email-storage");
-      localStorage.removeItem("auth-storage");
-    }
   };
 
   return (
@@ -115,28 +107,28 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
           </div>
           <div className="sidebar__wrapper">
             <div className="sidebar__top">
-              <a href="/for-you" className={`sidebar__link--wrapper`}>
+              <Link href="/for-you" className={`sidebar__link--wrapper`}>
                 <div
                   className={`sidebar__link--line ${
-                    currentPath === "/for-you" ? `active--tab` : ""
+                    pathname === "/for-you" ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
                   <AiOutlineHome />
                 </div>
                 <div className="sidebar__link--text">For You</div>
-              </a>
-              <a className="sidebar__link--wrapper" href="/library">
+              </Link>
+              <Link className="sidebar__link--wrapper" href="/library">
                 <div
                   className={`sidebar__link--line ${
-                    currentPath === "/library" ? `active--tab` : ""
+                    pathname === "/library" ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
                   <IoBookmarkOutline />
                 </div>
                 <div className="sidebar__link--text">My Library</div>
-              </a>
+              </Link>
               <div className="sidebar__link--wrapper sidebar__link--not-allowed">
                 <div className={`sidebar__link--line`}></div>
                 <div className="sidebar__icon--wrapper">
@@ -153,7 +145,7 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
               </div>
             </div>
             <div className="sidebar__bottom">
-              {window.location.pathname === `/player/${params.id}` ? (
+              {pathname === `/player/${params.id}` ? (
                 <div className="sidebar__link--wrapper sidebar__font--size-wrapper">
                   <div
                     className={`sidebar__link--text sidebar__font--size-icon sidebar__font--size-icon-small font1 ${
@@ -197,17 +189,17 @@ const SideBar: React.FC<SideBarProps> = ({ isSidebarOpen }) => {
                   </div>
                 </div>
               ) : null}
-              <a className="sidebar__link--wrapper" href="/settings">
+              <Link className="sidebar__link--wrapper" href="/settings">
                 <div
                   className={`sidebar__link--line ${
-                    currentPath === `/player/${params.id}` ? `active--tab` : ""
+                    pathname === `/player/${params.id}` ? `active--tab` : ""
                   }`}
                 ></div>
                 <div className="sidebar__icon--wrapper">
                   <BsGear />
                 </div>
                 <div className="sidebar__link--text">Settings</div>
-              </a>
+              </Link>
               <div className="sidebar__link--wrapper sidebar__link--not-allowed">
                 <div className="sidebar__link--line "></div>
                 <div className="sidebar__icon--wrapper">
