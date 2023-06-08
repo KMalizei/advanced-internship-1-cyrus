@@ -13,7 +13,6 @@ import { FaSpinner } from "react-icons/fa";
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const router = useRouter();
@@ -21,9 +20,6 @@ export default function Home() {
 
   function openModal() {
     setModalOpen(!isModalOpen);
-    if (isModalOpen === false) {
-      setIsLoading(true);
-    }
   }
 
   function handleOverlayClick(event: any) {
@@ -86,13 +82,7 @@ export default function Home() {
                     and even people who don{`'`}t like to read.
                   </div>
                   <button className="btn home__cta--btn" onClick={openModal}>
-                    {isLoading ? (
-                      <div className="log__in--spinner">
-                        <FaSpinner />
-                      </div>
-                    ) : (
-                      <>Login</>
-                    )}
+                    <div>Login</div>
                   </button>
                 </div>
                 <figure className="landing__image--mask">
@@ -185,7 +175,7 @@ export default function Home() {
                   <div className="statistics__data">
                     <div className="statistics__data--number">91%</div>
                     <div className="statistics__data--title">
-                      of Summarist members <b>report feeling more productive</b>
+                      of Summarist members <b>report feeling more productive </b>
                       {""}
                       after incorporating the service into their daily routine.
                     </div>
@@ -255,9 +245,9 @@ export default function Home() {
                   </div>
                   <div className="review__body">
                     I love this app! It provides
-                    <b>concise and accurate summaries</b> of books in a way that
-                    is easy to understand. It{`'`}s also very user-friendly and
-                    intuitive.
+                    <b> concise and accurate summaries</b> of books in a way
+                    that is easy to understand. It{`'`}s also very user-friendly
+                    and intuitive.
                   </div>
                 </div>
                 <div className="review">
@@ -270,7 +260,7 @@ export default function Home() {
                   <div className="review__body">
                     This app is a great way to get the main takeaways from a
                     book without having to read the entire thing.
-                    <b>The summaries are well-written and informative.</b>
+                    <b> The summaries are well-written and informative.</b>{" "}
                     Definitely worth downloading.
                   </div>
                 </div>
@@ -283,7 +273,7 @@ export default function Home() {
                   </div>
                   <div className="review__body">
                     If you{`'`}re a busy person who
-                    <b>loves reading but doesn{`'`}t have the time</b> to read
+                    <b> loves reading but doesn{`'`}t have the time</b> to read
                     every book in full, this app is for you! The summaries are
                     thorough and provide a great overview of the book{`'`}s
                     content.
@@ -316,6 +306,9 @@ export default function Home() {
                 </div>
                 <div className="numbers">
                   <div className="numbers__icon numbers__star--icon">
+                    <BsStarFill />
+                    <BsStarFill />
+                    <BsStarFill />
                     <BsStarFill />
                     <BsStarHalf />
                   </div>

@@ -31,7 +31,6 @@ interface SavedBooksProps {
   savedBooks: SavedBook[];
   onMoveToFinished: (bookId: string) => void;
   onDeleteBook: (bookId: string) => void;
-  isLoading: boolean;
 }
 
 export default function SavedBooks({
@@ -40,7 +39,6 @@ export default function SavedBooks({
   onLoadedMetadata,
   savedBooks,
   onDeleteBook,
-  isLoading,
 }: SavedBooksProps) {
   const formatTime = (duration: number | null) => {
     if (duration && !isNaN(duration)) {

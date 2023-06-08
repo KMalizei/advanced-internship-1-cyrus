@@ -1,6 +1,12 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect, MutableRefObject, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  MutableRefObject,
+  useRef,
+  use,
+} from "react";
 import SavedBooks from "../components/SavedBooks";
 import SidebarSizing from "../components/UI/SidebarSizing";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
@@ -14,6 +20,7 @@ import { useBookStore } from "../utilities/bookStore";
 import { useAuthStore } from "@/app/utilities/authStore";
 import LogInModal from "../components/UI/LogInModal";
 import RecommendedSkeleton from "../components/UI/RecommendedSkeleton";
+import { FaSpinner } from "react-icons/fa";
 
 function Library() {
   const authStore = useAuthStore();
@@ -53,8 +60,6 @@ function Library() {
         }
       } catch (error) {
         console.error("Error fetching saved book IDs:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -63,7 +68,6 @@ function Library() {
 
   useEffect(() => {
     if (savedBookIds.length === 0) {
-      setIsLoading(false);
       return;
     }
 
@@ -97,9 +101,7 @@ function Library() {
         console.error("Error fetching saved books:", error);
         setIsLoading(false);
       } finally {
-        setTimeout(() => {
           setIsLoading(false);
-        }, 250);
       }
     };
 
@@ -174,19 +176,17 @@ function Library() {
                 &quot;{savedBooks.length}&quot;{" "}
                 {savedBooks.length === 1 ? "item" : "items"}
               </div>
-              <div className="for-you__recommended--books">
+              <div className="saved__books">
                 {isLoading ? (
                   <>
-                    {Array.from({ length: savedBooks.length }).map(
-                      (_, index) => (
-                        <div
-                          className="for-you__recommended--books-link"
-                          key={index}
-                        >
-                          <RecommendedSkeleton />
-                        </div>
-                      )
-                    )}
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div
+                        className="for-you__recommended--books-link"
+                        key={index}
+                      >
+                        <RecommendedSkeleton />
+                      </div>
+                    ))}
                   </>
                 ) : (
                   <>
@@ -197,18 +197,13 @@ function Library() {
                       onLoadedMetadata={onLoadedMetadata}
                       onMoveToFinished={moveBookToFinished}
                       onDeleteBook={onDeleteBook}
-                      isLoading={isLoading}
                     />
                   </>
                 )}
               </div>
               <div className="for-you__title">Finished</div>
               <div className="for-you__sub--title">&quot;0&quot; Items</div>
-              <div className="for-you__recommended--books"></div>
-              <div className="library_libBlockWrapper__8mLgC">
-                <h2>Done and dusted!</h2>
-                <p>When you finish a book, you can find it here later.</p>
-              </div>
+              <div className="saved__books"></div>
             </>
           ) : (
             <div className="settings__login--wrapper">

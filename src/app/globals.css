@@ -458,7 +458,7 @@ FEATURES
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   gap: 24px;
   background-color: #f1f6f4;
   padding: 40px 24px;
@@ -758,7 +758,7 @@ SIDEBAR
   height: 100%;
   background-color: #3a4649;
   transition: opacity 0.4s ease 0s;
-  z-index: 10;
+  z-index: 9999;
   opacity: 0.65;
   pointer-events: auto;
 }
@@ -774,7 +774,7 @@ SIDEBAR
   top: 0;
   left: 0;
   height: 100vh;
-  z-index: 1000;
+  z-index: 9999;
   transition: all 0.3s;
 }
 .sidebar__wrapper {
@@ -938,7 +938,7 @@ FOR-YOU PAGE
 .selected__book {
   display: flex;
   justify-content: space-between;
-  width: 85%;
+  width: 100%;
   background-color: #fbefd6;
   border-radius: 4px;
   padding: 24px;
@@ -1221,6 +1221,16 @@ FOR-YOU PAGE
   display: flex;
   overflow-x: hidden;
   gap: 16px;
+  scroll-snap-type: mandatory;
+  scroll-snap-type: x;
+  margin-bottom: 32px;
+  overflow-x: scroll;
+}
+
+.saved__books {
+  display: flex;
+  overflow-x: hidden;
+  gap: 14px;
   scroll-snap-type: mandatory;
   scroll-snap-type: x;
   margin-bottom: 32px;
@@ -1758,7 +1768,7 @@ BOOK INFO PAGE
 .log__in--spinner svg {
   width: 24px;
   height: 24px;
-  color: #032b41;
+  color: white;
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
@@ -1775,6 +1785,10 @@ BOOK INFO PAGE
     padding: 16px 24px;
     flex-direction: column;
   }
+  .audio__track--wrapper {
+    width: 100%;
+    justify-content: center;
+  }
   .audio__wrapper > div {
     width: 100%;
     justify-content: center;
@@ -1784,9 +1798,6 @@ BOOK INFO PAGE
   }
   .audio__book--summary-title {
     font-size: 20px;
-  }
-  .audio__book--summary-text {
-    font-size: 14px;
   }
   .summary {
     height: calc(100vh - 260px);
