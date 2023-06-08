@@ -37,7 +37,7 @@ const SelectedBooks__API =
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [audioDurations, setAudioDurations] = useState<{
     [id: string]: number;
   }>({});
