@@ -15,12 +15,9 @@ import { useAuthStore } from "@/app/utilities/authStore";
 import LogInModal from "../components/UI/LogInModal";
 import RecommendedSkeleton from "../components/UI/RecommendedSkeleton";
 
-interface ArrayInterface {
-  Array: any;
-}
-
 function Library() {
   const authStore = useAuthStore();
+  const isUserAuth = authStore.isUserAuth;
   const [isClient, setIsClient] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,50 +31,12 @@ function Library() {
     useRef({});
   const { addFinishedBook } = useBookStore();
   const modal__dimRef = useRef(null);
-  const isUserAuth = authStore?.isUserAuth;
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  console.log(isUserAuth);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  function openModal() {
-    setIsModalOpen(!isModalOpen);
-  }
-
-  function handleOverlayClick(event: any) {
-    if (event.target === modal__dimRef.current) {
-      openModal();
-    }
-  }
-
-  const onLoadedMetadata = (id: string) => {
-    const seconds = audioRefs.current[id]?.duration || 0;
-    setAudioDurations((prevDurations) => ({ ...prevDurations, [id]: seconds }));
-  };
-
-  const onDeleteBook = async (bookId: string) => {
-    try {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (user) {
-        const bookRef = doc(
-          collection(db, "users", user.uid, "library"),
-          bookId
-        );
-        await deleteDoc(bookRef);
-
-        setSavedBooks((prevSavedBooks) =>
-          prevSavedBooks.filter((book) => book.id !== bookId)
-        );
-      }
-    } catch (error) {
-      console.error("Error deleting book:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchSavedBooks = async () => {
@@ -107,10 +66,9 @@ function Library() {
       return;
     }
 
-    setIsLoading(true);
-
     const fetchBooksData = async () => {
       try {
+        setIsLoading(true);
         const bookPromises = savedBookIds.map(async (bookId) => {
           const response = await fetch(
             `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${bookId}`
@@ -134,15 +92,34 @@ function Library() {
 
         const books = await Promise.all(bookPromises);
         setSavedBooks(books);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching saved books:", error);
-      }
-
         setIsLoading(false);
+      }
     };
 
     fetchBooksData();
   }, [savedBookIds]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  function openModal() {
+    setIsModalOpen(!isModalOpen);
+  }
+
+  function handleOverlayClick(event: any) {
+    if (event.target === modal__dimRef.current) {
+      openModal();
+    }
+  }
+
+  const onLoadedMetadata = (id: string) => {
+    const seconds = audioRefs.current[id]?.duration || 0;
+    setAudioDurations((prevDurations) => ({ ...prevDurations, [id]: seconds }));
+  };
 
   const moveBookToFinished = (bookId: string) => {
     const bookIndex = savedBooks.findIndex((book) => book.id === bookId);
@@ -152,6 +129,26 @@ function Library() {
       setSavedBooks((prevSavedBooks) =>
         prevSavedBooks.filter((book) => book.id !== bookId)
       );
+    }
+  };
+
+  const onDeleteBook = async (bookId: string) => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user) {
+        const bookRef = doc(
+          collection(db, "users", user.uid, "library"),
+          bookId
+        );
+        await deleteDoc(bookRef);
+
+        setSavedBooks((prevSavedBooks) =>
+          prevSavedBooks.filter((book) => book.id !== bookId)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting book:", error);
     }
   };
 
@@ -175,7 +172,7 @@ function Library() {
                 <div className="for-you__recommended--books">
                   {isLoading ? (
                     <>
-                      {Array.from({ length: savedBooks.length }).map(
+                      {Array.from({ length: 3 }).map(
                         (_, index) => (
                           <div
                             className="for-you__recommended--books-link"

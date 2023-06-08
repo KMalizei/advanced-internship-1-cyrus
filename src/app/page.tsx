@@ -17,7 +17,7 @@ export default function Home() {
   const modal__dimRef = useRef(null);
   const authStore = useAuthStore();
   const router = useRouter();
-  const isUserAuth = authStore?.isUserAuth;
+  const isUserAuth = authStore.isUserAuth;
 
   function openModal() {
     setModalOpen(!isModalOpen);
