@@ -30,6 +30,9 @@ interface SelectedBook {
   handleBookClick: (id: string) => void;
 }
 
+const SelectedBooks__API =
+  "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected";
+
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -45,9 +48,7 @@ function Page() {
   };
 
   const selectedBookQuery = async () => {
-    const { data } = await axios.get(
-      "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected"
-    );
+    const { data } = await axios.get(`${SelectedBooks__API}`);
     setSelectedBook(data);
     setIsLoading(false);
   };

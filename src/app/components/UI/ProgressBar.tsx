@@ -1,4 +1,4 @@
-import React, { MutableRefObject } from "react";
+import React, { MutableRefObject, useEffect } from "react";
 
 interface AudioPlayerProps {
   progressBarRef: MutableRefObject<any>;
@@ -13,8 +13,8 @@ function ProgressBar({
   timeProgress,
   duration,
 }: AudioPlayerProps) {
-  const handleProgressChange = () => {
-    audioRef.current.currentTime = progressBarRef.current.value;
+  const handleProgressChange = (e: any) => {
+    audioRef.current.currentTime = e.target.value;
   };
 
   const formatTime = (time: number) => {
@@ -28,15 +28,23 @@ function ProgressBar({
     return "00:00";
   };
 
+  useEffect(() => {
+    if (progressBarRef.current) {
+      progressBarRef.current.max = duration;
+    }
+  }, [progressBarRef, duration]);
+
   return (
     <>
       <div className="audio__progress--wrapper">
         <div className="audio__time">{formatTime(timeProgress)}</div>
         <input
           type="range"
+          min="0"
           className="audio__progress--bar"
           ref={progressBarRef}
           onChange={handleProgressChange}
+          value={timeProgress ? timeProgress : "0"}
         />
         <div className="audio__time">{formatTime(duration)}</div>
       </div>

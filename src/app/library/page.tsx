@@ -20,11 +20,9 @@ interface ArrayInterface {
 }
 
 function Library() {
-  const user = getAuth().currentUser;
   const authStore = useAuthStore();
   const [isClient, setIsClient] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const skeletonArray = Array.from({ length: 6 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [savedBooks, setSavedBooks] = useState<any[]>([]);
   const [savedBookIds, setSavedBookIds] = useState<string[]>([]);
@@ -105,13 +103,14 @@ function Library() {
   }, []);
 
   useEffect(() => {
-    const fetchBooksData = async () => {
-      setIsLoading(true);
-      try {
-        if (savedBookIds.length === 0) {
-          return;
-        }
+    if (savedBookIds.length === 0) {
+      return;
+    }
 
+    setIsLoading(true);
+
+    const fetchBooksData = async () => {
+      try {
         const bookPromises = savedBookIds.map(async (bookId) => {
           const response = await fetch(
             `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${bookId}`
@@ -130,26 +129,7 @@ function Library() {
             return null;
           }
 
-          const modifiedBookData = {
-            id: bookId,
-            author: bookData.author,
-            title: bookData.title,
-            subTitle: bookData.subTitle,
-            imageLink: bookData.imageLink,
-            audioLink: bookData.audioLink,
-            totalRating: bookData.totalRating,
-            averageRating: bookData.averageRating,
-            keyIdeas: bookData.keyIdeas,
-            type: bookData.type,
-            status: bookData.status,
-            subscriptionRequired: bookData.subscriptionRequired,
-            summary: bookData.summary,
-            tags: bookData.tags,
-            bookDescription: bookData.bookDescription,
-            authorDescription: bookData.authorDescription,
-          };
-
-          return modifiedBookData;
+          return { ...bookData, id: bookId };
         });
 
         const books = await Promise.all(bookPromises);
@@ -157,9 +137,8 @@ function Library() {
       } catch (error) {
         console.error("Error fetching saved books:", error);
       }
-      setTimeout(() => {
+
         setIsLoading(false);
-      }, 500);
     };
 
     fetchBooksData();

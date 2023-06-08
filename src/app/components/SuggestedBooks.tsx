@@ -33,6 +33,9 @@ interface SuggestedBooksProps {
   onLoadedMetadata: (id: string) => void;
 }
 
+const suggestedBooks__API =
+  "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested";
+
 export default function SuggestedBooks({
   audioDurations,
   audioRefs,
@@ -42,9 +45,7 @@ export default function SuggestedBooks({
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const recommendBookQuery = async () => {
-    const { data } = await axios.get(
-      "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested"
-    );
+    const { data } = await axios.get(`${suggestedBooks__API}`);
     setRecommendBook(data);
     setIsLoading(false);
   };

@@ -30,7 +30,7 @@ interface Book {
   audioLink: string;
   totalRating: number;
   averageRating: number;
-  keyIdeas?: string[];
+  keyIdeas: string[];
   type: string;
   status: string;
   subscriptionRequired: boolean;
