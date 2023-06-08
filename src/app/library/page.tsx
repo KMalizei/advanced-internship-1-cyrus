@@ -53,6 +53,8 @@ function Library() {
         }
       } catch (error) {
         console.error("Error fetching saved book IDs:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -61,6 +63,7 @@ function Library() {
 
   useEffect(() => {
     if (savedBookIds.length === 0) {
+      setIsLoading(false);
       return;
     }
 
@@ -90,10 +93,13 @@ function Library() {
 
         const books = await Promise.all(bookPromises);
         setSavedBooks(books);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching saved books:", error);
         setIsLoading(false);
+      } finally {
+        setTimeout(() => {
+        setIsLoading(false);
+        }, 250);
       }
     };
 
@@ -170,16 +176,14 @@ function Library() {
                 <div className="for-you__recommended--books">
                   {isLoading ? (
                     <>
-                      {Array.from({ length: 3 }).map(
-                        (_, index) => (
-                          <div
-                            className="for-you__recommended--books-link"
-                            key={index}
-                          >
-                            <RecommendedSkeleton />
-                          </div>
-                        )
-                      )}
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <div
+                          className="for-you__recommended--books-link"
+                          key={index}
+                        >
+                          <RecommendedSkeleton />
+                        </div>
+                      ))}
                     </>
                   ) : (
                     <>
