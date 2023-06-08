@@ -176,7 +176,7 @@ function Library() {
                 <div className="for-you__recommended--books">
                   {isLoading ? (
                     <>
-                      {Array.from({ length: 3 }).map((_, index) => (
+                      {Array.from({ length: savedBooks.length }).map((_, index) => (
                         <div
                           className="for-you__recommended--books-link"
                           key={index}
