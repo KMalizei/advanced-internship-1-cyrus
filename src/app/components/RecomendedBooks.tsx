@@ -3,6 +3,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import RecommendedSkeleton from "./UI/RecommendedSkeleton";
 import { AiOutlineClockCircle, AiOutlineStar } from "react-icons/ai";
+import Link from "next/link";
 
 interface RecommendBook {
   id: string;
@@ -80,7 +81,7 @@ export default function RecommendedBooks({
           {recommendBook.map((book: RecommendBook, index) => {
             const audioId = `audio_${book.id}`;
             return (
-              <a
+              <Link
                 key={index}
                 className="for-you__recommended--books-link"
                 href={`/book/${book.id}`}
@@ -99,6 +100,7 @@ export default function RecommendedBooks({
                     className="book__image"
                     src={book.imageLink}
                     alt="book"
+                    loading="lazy"
                   />
                 </figure>
                 <div className="recommended__book--title">{book.title}</div>
@@ -127,7 +129,7 @@ export default function RecommendedBooks({
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </>

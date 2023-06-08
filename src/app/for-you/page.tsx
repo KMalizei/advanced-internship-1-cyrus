@@ -7,6 +7,7 @@ import React, { useState, useEffect, MutableRefObject, useRef } from "react";
 import SelectedSkeleton from "../components/UI/SelectedBookSkeleton";
 import { AiFillPlayCircle } from "react-icons/ai";
 import SidebarSizing from "../components/UI/SidebarSizing";
+import Link from "next/link";
 
 interface SelectedBook {
   id: string;
@@ -141,7 +142,7 @@ function Page() {
               <div className="for-you__wrapper">
                 <div className="for-you__title">Selected just for you</div>
                 {selectedBook.map((book, index) => (
-                  <a
+                  <Link
                     key={index}
                     href={`book/${book.id}`}
                     className="selected__book"
@@ -189,7 +190,7 @@ function Page() {
                         </div>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 ))}
                 <div>
                   <div className="for-you__title">Recommended For You</div>

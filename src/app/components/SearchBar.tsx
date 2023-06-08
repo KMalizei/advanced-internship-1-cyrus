@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { AiOutlineSearch, AiOutlineStar } from "react-icons/ai";
+import Link from "next/link";
 
 interface Book {
   id?: string;
@@ -105,7 +106,7 @@ export default function SearchBar({ isSidebarOpen, toggleSidebar }: SearchBarPro
               <div className="no-books-found">No books found</div>
             ) : (
               searchResults.map((book) => (
-                <a
+                <Link
                   className="search__book--link"
                   href={`/book/${book.id}`}
                   key={book.id}
@@ -140,7 +141,7 @@ export default function SearchBar({ isSidebarOpen, toggleSidebar }: SearchBarPro
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))
             )}
           </div>
