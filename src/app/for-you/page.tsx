@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import RecommendedBooks from "../components/RecomendedBooks";
 import SuggestedBooks from "../components/SuggestedBooks";

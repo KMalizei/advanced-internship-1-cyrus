@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useRef, useEffect } from "react";
 import { AiFillBulb, AiFillFileText, AiFillAudio } from "react-icons/ai";

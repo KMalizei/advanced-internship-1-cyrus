@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState, useRef } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
