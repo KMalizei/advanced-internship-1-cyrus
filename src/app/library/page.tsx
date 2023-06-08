@@ -1,6 +1,12 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect, MutableRefObject, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  MutableRefObject,
+  useRef,
+  use,
+} from "react";
 import SavedBooks from "../components/SavedBooks";
 import SidebarSizing from "../components/UI/SidebarSizing";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
@@ -14,17 +20,13 @@ import { useBookStore } from "../utilities/bookStore";
 import { useAuthStore } from "@/app/utilities/authStore";
 import LogInModal from "../components/UI/LogInModal";
 import RecommendedSkeleton from "../components/UI/RecommendedSkeleton";
-
-interface ArrayInterface {
-  Array: any;
-}
+import { FaSpinner } from "react-icons/fa";
 
 function Library() {
-  const user = getAuth().currentUser;
   const authStore = useAuthStore();
+  const isUserAuth = authStore.isUserAuth;
   const [isClient, setIsClient] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const skeletonArray = Array.from({ length: 6 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [savedBooks, setSavedBooks] = useState<any[]>([]);
   const [savedBookIds, setSavedBookIds] = useState<string[]>([]);
@@ -36,50 +38,10 @@ function Library() {
     useRef({});
   const { addFinishedBook } = useBookStore();
   const modal__dimRef = useRef(null);
-  const isUserAuth = authStore?.isUserAuth;
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  function openModal() {
-    setIsModalOpen(!isModalOpen);
-  }
-
-  function handleOverlayClick(event: any) {
-    if (event.target === modal__dimRef.current) {
-      openModal();
-    }
-  }
-
-  const onLoadedMetadata = (id: string) => {
-    const seconds = audioRefs.current[id]?.duration || 0;
-    setAudioDurations((prevDurations) => ({ ...prevDurations, [id]: seconds }));
-  };
-
-  const onDeleteBook = async (bookId: string) => {
-    try {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (user) {
-        const bookRef = doc(
-          collection(db, "users", user.uid, "library"),
-          bookId
-        );
-        await deleteDoc(bookRef);
-
-        setSavedBooks((prevSavedBooks) =>
-          prevSavedBooks.filter((book) => book.id !== bookId)
-        );
-      }
-    } catch (error) {
-      console.error("Error deleting book:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchSavedBooks = async () => {
@@ -102,16 +64,16 @@ function Library() {
     };
 
     fetchSavedBooks();
-  }, []);
+  }, [isClient]);
 
   useEffect(() => {
-    const fetchBooksData = async () => {
-      setIsLoading(true);
-      try {
-        if (savedBookIds.length === 0) {
-          return;
-        }
+    if (savedBookIds.length === 0) {
+      return;
+    }
 
+    const fetchBooksData = async () => {
+      try {
+        setIsLoading(true);
         const bookPromises = savedBookIds.map(async (bookId) => {
           const response = await fetch(
             `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${bookId}`
@@ -130,40 +92,43 @@ function Library() {
             return null;
           }
 
-          const modifiedBookData = {
-            id: bookId,
-            author: bookData.author,
-            title: bookData.title,
-            subTitle: bookData.subTitle,
-            imageLink: bookData.imageLink,
-            audioLink: bookData.audioLink,
-            totalRating: bookData.totalRating,
-            averageRating: bookData.averageRating,
-            keyIdeas: bookData.keyIdeas,
-            type: bookData.type,
-            status: bookData.status,
-            subscriptionRequired: bookData.subscriptionRequired,
-            summary: bookData.summary,
-            tags: bookData.tags,
-            bookDescription: bookData.bookDescription,
-            authorDescription: bookData.authorDescription,
-          };
-
-          return modifiedBookData;
+          return { ...bookData, id: bookId };
         });
 
         const books = await Promise.all(bookPromises);
         setSavedBooks(books);
       } catch (error) {
         console.error("Error fetching saved books:", error);
-      }
-      setTimeout(() => {
         setIsLoading(false);
-      }, 500);
+      } finally {
+          setIsLoading(false);
+      }
     };
 
     fetchBooksData();
   }, [savedBookIds]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  function openModal() {
+    setIsModalOpen(!isModalOpen);
+  }
+
+  function handleOverlayClick(event: any) {
+    if (event.target === modal__dimRef.current) {
+      openModal();
+    }
+  }
+
+  const onLoadedMetadata = (id: string) => {
+    const seconds = audioRefs.current[id]?.duration || 0;
+    setAudioDurations((prevDurations) => ({
+      ...prevDurations,
+      [id]: seconds,
+    }));
+  };
 
   const moveBookToFinished = (bookId: string) => {
     const bookIndex = savedBooks.findIndex((book) => book.id === bookId);
@@ -173,6 +138,26 @@ function Library() {
       setSavedBooks((prevSavedBooks) =>
         prevSavedBooks.filter((book) => book.id !== bookId)
       );
+    }
+  };
+
+  const onDeleteBook = async (bookId: string) => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user) {
+        const bookRef = doc(
+          collection(db, "users", user.uid, "library"),
+          bookId
+        );
+        await deleteDoc(bookRef);
+
+        setSavedBooks((prevSavedBooks) =>
+          prevSavedBooks.filter((book) => book.id !== bookId)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting book:", error);
     }
   };
 
@@ -188,47 +173,37 @@ function Library() {
             <>
               <div className="for-you__title">Saved Books</div>
               <div className="for-you__sub--title">
-                {savedBooks.length} {savedBooks.length === 1 ? "item" : "items"}
+                &quot;{savedBooks.length}&quot;{" "}
+                {savedBooks.length === 1 ? "item" : "items"}
               </div>
-              {savedBooks.length === 0 ? (
-                <div className="no-books"></div>
-              ) : (
-                <div className="for-you__recommended--books">
-                  {isLoading ? (
-                    <>
-                      {Array.from({ length: savedBooks.length }).map(
-                        (_, index) => (
-                          <div
-                            className="for-you__recommended--books-link"
-                            key={index}
-                          >
-                            <RecommendedSkeleton />
-                          </div>
-                        )
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <SavedBooks
-                        savedBooks={savedBooks}
-                        audioDurations={audioDurations}
-                        audioRefs={audioRefs}
-                        onLoadedMetadata={onLoadedMetadata}
-                        onMoveToFinished={moveBookToFinished}
-                        onDeleteBook={onDeleteBook}
-                        isLoading={isLoading}
-                      />
-                    </>
-                  )}
-                </div>
-              )}
+              <div className="saved__books">
+                {isLoading ? (
+                  <>
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div
+                        className="for-you__recommended--books-link"
+                        key={index}
+                      >
+                        <RecommendedSkeleton />
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <SavedBooks
+                      savedBooks={savedBooks}
+                      audioDurations={audioDurations}
+                      audioRefs={audioRefs}
+                      onLoadedMetadata={onLoadedMetadata}
+                      onMoveToFinished={moveBookToFinished}
+                      onDeleteBook={onDeleteBook}
+                    />
+                  </>
+                )}
+              </div>
               <div className="for-you__title">Finished</div>
               <div className="for-you__sub--title">&quot;0&quot; Items</div>
-              <div className="for-you__recommended--books"></div>
-              <div className="library_libBlockWrapper__8mLgC">
-                <h2>Done and dusted!</h2>
-                <p>When you finish a book, you can find it here later.</p>
-              </div>
+              <div className="saved__books"></div>
             </>
           ) : (
             <div className="settings__login--wrapper">

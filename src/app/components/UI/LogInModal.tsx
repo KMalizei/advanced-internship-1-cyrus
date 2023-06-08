@@ -1,6 +1,5 @@
-
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -15,13 +14,18 @@ import { db } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuthStore } from "@/app/utilities/authStore";
 import { useEmailStore } from "@/app/utilities/emailStore";
-import { FcGoogle } from "react-icons/fc";
 import { BsFillPersonFill } from "react-icons/bs";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { FaSpinner } from "react-icons/fa";
 
 function LogInModal({ openModal }: { openModal: any }) {
   const authStore = useAuthStore();
   const emailStore = useEmailStore();
+  const [guestLoading, setGuestLoading] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState<boolean>(false);
+  const [emailLoading, setEmailLoading] = useState<boolean>(false);
+  const [emailSignUpLoading, setEmailSignUpLoading] = useState<boolean>(false);
+  const [passwordReset, setPasswordReset] = useState<boolean>(false);
   const [logInModal, setLogInModal] = useState(true);
   const [signUpModal, setSignUpModal] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
@@ -30,6 +34,7 @@ function LogInModal({ openModal }: { openModal: any }) {
 
   const emailSignUp = async (e: any) => {
     try {
+      setEmailSignUpLoading(true);
       const auth = getAuth();
       e.preventDefault();
       await createUserWithEmailAndPassword(auth, email, password);
@@ -42,13 +47,16 @@ function LogInModal({ openModal }: { openModal: any }) {
         });
       }
       openModal();
+      stopLoading();
     } catch (error) {
+      stopLoading();
       alert(error);
     }
   };
 
   const emailLogIn = async (e: any) => {
     try {
+      setEmailLoading(true);
       const auth = getAuth();
       await setPersistence(auth, browserLocalPersistence);
       e.preventDefault();
@@ -62,13 +70,16 @@ function LogInModal({ openModal }: { openModal: any }) {
         });
       }
       openModal();
+      stopLoading();
     } catch (error) {
+      stopLoading();
       alert(error);
     }
   };
 
   const guestLogIn = async (e: any) => {
     try {
+      setGuestLoading(true);
       e.preventDefault();
       const auth = getAuth();
       await setPersistence(auth, browserLocalPersistence);
@@ -84,13 +95,16 @@ function LogInModal({ openModal }: { openModal: any }) {
         });
       }
       openModal();
+      stopLoading();
     } catch (error) {
+      stopLoading();
       alert(error);
     }
   };
 
   const googleLogIn = async (e: any) => {
     try {
+      setGoogleLoading(true);
       const auth = getAuth();
       await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
@@ -104,13 +118,16 @@ function LogInModal({ openModal }: { openModal: any }) {
         });
       }
       openModal();
+      stopLoading();
     } catch (error) {
+      stopLoading();
       alert(error);
     }
   };
 
   const sendPasswordReset = async (e: any) => {
     try {
+      setPasswordReset(true);
       e.preventDefault();
       const auth = getAuth();
       await sendPasswordResetEmail(auth, email).then(() => {
@@ -118,6 +135,7 @@ function LogInModal({ openModal }: { openModal: any }) {
       });
       swapToLogInModal();
     } catch (error) {
+      stopLoading();
       alert(error);
     }
   };
@@ -127,6 +145,13 @@ function LogInModal({ openModal }: { openModal: any }) {
     authStore.setIsUserAuth(true);
     emailStore.setEmail(user?.email || "");
   };
+
+  function stopLoading() {
+    setGuestLoading(false);
+    setGoogleLoading(false);
+    setEmailLoading(false);
+    setEmailSignUpLoading(false);
+  }
 
   function swapToLogInModal() {
     if (logInModal === false) {
@@ -170,7 +195,13 @@ function LogInModal({ openModal }: { openModal: any }) {
               <figure className="google__icon--mask guest__icon--mask">
                 <BsFillPersonFill />
               </figure>
-              <div>Login as a Guest</div>
+              {guestLoading ? (
+                <div className="log__in--spinner">
+                  <FaSpinner />
+                </div>
+              ) : (
+                <div>Login as a Guest</div>
+              )}
             </button>
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
@@ -188,7 +219,13 @@ function LogInModal({ openModal }: { openModal: any }) {
                   height="100"
                 />
               </figure>
-              <div>Login with Google</div>
+              {googleLoading ? (
+                <div className="log__in--spinner">
+                  <FaSpinner />
+                </div>
+              ) : (
+                <div>Login with Google</div>
+              )}
             </button>
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
@@ -213,7 +250,13 @@ function LogInModal({ openModal }: { openModal: any }) {
                 onChange={(e) => setPassword(e.target.value)}
               ></input>
               <button className="btn" type="submit">
-                <span>Login</span>
+                {emailLoading ? (
+                  <div className="log__in--spinner">
+                    <FaSpinner />
+                  </div>
+                ) : (
+                  <span>Login</span>
+                )}
               </button>
             </form>
           </div>
@@ -245,7 +288,13 @@ function LogInModal({ openModal }: { openModal: any }) {
                   height="100"
                 ></img>
               </figure>
-              <div>Sign up with Google</div>
+              {googleLoading ? (
+                <div className="log__in--spinner">
+                  <FaSpinner />
+                </div>
+              ) : (
+                <div>Sign up with Google</div>
+              )}
             </button>
             <div className="auth__separator">
               <span className="auth__separator--text">or</span>
@@ -268,7 +317,13 @@ function LogInModal({ openModal }: { openModal: any }) {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button className="btn" type="submit">
-                <span>Sign up</span>
+                {emailSignUpLoading ? (
+                  <div className="log__in--spinner">
+                    <FaSpinner />
+                  </div>
+                ) : (
+                  <span>Sign up</span>
+                )}
               </button>
             </form>
           </div>
@@ -297,7 +352,13 @@ function LogInModal({ openModal }: { openModal: any }) {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <button className="btn" onClick={sendPasswordReset}>
-                <span>Send reset password link</span>
+                {passwordReset ? (
+                  <>
+                    <AiOutlineCheck />
+                  </>
+                ) : (
+                  <span>Send reset password link</span>
+                )}
               </button>
             </form>
           </div>
@@ -305,7 +366,7 @@ function LogInModal({ openModal }: { openModal: any }) {
             Go to login
           </button>
           <div className="auth__close--btn" onClick={openModal}>
-          <AiOutlineClose />
+            <AiOutlineClose />
           </div>
         </>
       )}

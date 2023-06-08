@@ -3,6 +3,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import RecommendedSkeleton from "./UI/RecommendedSkeleton";
 import { AiOutlineClockCircle, AiOutlineStar } from "react-icons/ai";
+import Link from "next/link";
 
 interface RecommendBook {
   id: string;
@@ -33,6 +34,9 @@ interface SuggestedBooksProps {
   onLoadedMetadata: (id: string) => void;
 }
 
+const suggestedBooks__API =
+  "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested";
+
 export default function SuggestedBooks({
   audioDurations,
   audioRefs,
@@ -42,9 +46,7 @@ export default function SuggestedBooks({
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const recommendBookQuery = async () => {
-    const { data } = await axios.get(
-      "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested"
-    );
+    const { data } = await axios.get(`${suggestedBooks__API}`);
     setRecommendBook(data);
     setIsLoading(false);
   };
@@ -79,7 +81,7 @@ export default function SuggestedBooks({
           {recommendBook.map((book: RecommendBook, index) => {
             const audioId = `audio_${book.id}`;
             return (
-              <a
+              <Link
                 key={index}
                 className="for-you__recommended--books-link"
                 href={`/book/${book.id}`}
@@ -98,6 +100,7 @@ export default function SuggestedBooks({
                     className="book__image"
                     src={book.imageLink}
                     alt="book"
+                    loading="lazy"
                   />
                 </figure>
                 <div className="recommended__book--title">{book.title}</div>
@@ -126,7 +129,7 @@ export default function SuggestedBooks({
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </>

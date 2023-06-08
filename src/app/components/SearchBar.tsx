@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { AiOutlineSearch, AiOutlineStar } from "react-icons/ai";
+import { AiOutlineMenu, AiOutlineSearch, AiOutlineStar } from "react-icons/ai";
+import Link from "next/link";
 
 interface Book {
   id?: string;
@@ -22,21 +23,20 @@ interface Book {
   selectedBookQuery?: () => void;
   onClick?: () => void;
   handleBookClick: (id: string) => void;
-  
 }
 
 interface SearchBarProps {
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
-  
 }
 
-export default function SearchBar({ isSidebarOpen, toggleSidebar }: SearchBarProps) {
+export default function SearchBar({
+  isSidebarOpen,
+  toggleSidebar,
+}: SearchBarProps) {
   const [showBooksWrapper, setShowBooksWrapper] = useState(false);
   const [searchResults, setSearchResults] = useState<Book[]>([]);
   const searchBackgroundRef = useRef<HTMLDivElement>(null);
-  
-
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -96,7 +96,7 @@ export default function SearchBar({ isSidebarOpen, toggleSidebar }: SearchBarPro
             </div>
           </div>
           <div className="sidebar__toggle--btn" onClick={toggleSidebar}>
-          <AiOutlineSearch />
+            <AiOutlineMenu />
           </div>
         </div>
         {showBooksWrapper && (
@@ -105,7 +105,7 @@ export default function SearchBar({ isSidebarOpen, toggleSidebar }: SearchBarPro
               <div className="no-books-found">No books found</div>
             ) : (
               searchResults.map((book) => (
-                <a
+                <Link
                   className="search__book--link"
                   href={`/book/${book.id}`}
                   key={book.id}
@@ -140,7 +140,7 @@ export default function SearchBar({ isSidebarOpen, toggleSidebar }: SearchBarPro
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))
             )}
           </div>
@@ -149,4 +149,3 @@ export default function SearchBar({ isSidebarOpen, toggleSidebar }: SearchBarPro
     </div>
   );
 }
-

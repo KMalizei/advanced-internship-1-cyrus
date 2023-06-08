@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client"
@@ -102,12 +103,12 @@ function Page() {
                   <div className="audio__book--summary-text">
                     {book?.summary.slice(0, 550)} ...
                   </div>
-                  <a className="log-in__player--text" onClick={openModal}>
+                  <div className="log-in__player--text" onClick={openModal}>
                     {" "}
                     <br /> Please{" "}
                     <u className="log-in__player--underline">Login</u> To
                     Continue Reading
-                  </a>
+                  </div>
                 </>
               ) : (
                 <div className="audio__book--summary-text">{book?.summary}</div>

@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 "use client"
 import RecommendedBooks from "../components/RecomendedBooks";
@@ -7,6 +8,7 @@ import React, { useState, useEffect, MutableRefObject, useRef } from "react";
 import SelectedSkeleton from "../components/UI/SelectedBookSkeleton";
 import { AiFillPlayCircle } from "react-icons/ai";
 import SidebarSizing from "../components/UI/SidebarSizing";
+import Link from "next/link";
 
 interface SelectedBook {
   id: string;
@@ -30,10 +32,13 @@ interface SelectedBook {
   handleBookClick: (id: string) => void;
 }
 
+const SelectedBooks__API =
+  "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected";
+
 function Page() {
   const [selectedBook, setSelectedBook] = useState<SelectedBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [audioDurations, setAudioDurations] = useState<{
     [id: string]: number;
   }>({});
@@ -45,9 +50,7 @@ function Page() {
   };
 
   const selectedBookQuery = async () => {
-    const { data } = await axios.get(
-      "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected"
-    );
+    const { data } = await axios.get(`${SelectedBooks__API}`);
     setSelectedBook(data);
     setIsLoading(false);
   };
@@ -140,7 +143,7 @@ function Page() {
               <div className="for-you__wrapper">
                 <div className="for-you__title">Selected just for you</div>
                 {selectedBook.map((book, index) => (
-                  <a
+                  <Link
                     key={index}
                     href={`book/${book.id}`}
                     className="selected__book"
@@ -188,7 +191,7 @@ function Page() {
                         </div>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 ))}
                 <div>
                   <div className="for-you__title">Recommended For You</div>

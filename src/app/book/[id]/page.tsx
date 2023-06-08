@@ -19,6 +19,7 @@ import usePremiumStatus from "@/app/stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
 import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
+import Link from "next/link";
 
 interface Book {
   id: string;
@@ -30,7 +31,7 @@ interface Book {
   audioLink: string;
   totalRating: number;
   averageRating: number;
-  keyIdeas?: string[];
+  keyIdeas: string[];
   type: string;
   status: string;
   subscriptionRequired: boolean;
@@ -88,21 +89,15 @@ const Page = () => {
   }
 
   const premiumBookRouting = () => {
-    if (isUserAuth === false) {
+    if (!isUserAuth) {
       openModal();
-    } else if (isUserAuth === true && !book?.subscriptionRequired) {
-      routeToPlayer();
-    } else if (isUserAuth === true && book?.subscriptionRequired) {
-      if (userIsPremium === true) {
-        routeToPlayer();
-      } else {
-        router.push("/choose-plan");
-      }
+      return;
     }
-  };
-
-  const routeToPlayer = () => {
-    router.push(`/player/${book?.id}`);
+    if (!book?.subscriptionRequired || userIsPremium) {
+      router.push(`/player/${book?.id}`);
+      return;
+    }
+    router.push("/choose-plan");
   };
 
   useEffect(() => {

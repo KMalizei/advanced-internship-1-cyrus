@@ -3,6 +3,7 @@ import React, { MutableRefObject, useEffect, useState } from "react";
 import RecommendedSkeleton from "./UI/RecommendedSkeleton";
 import { AiOutlineClockCircle, AiOutlineStar } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
+import Link from "next/link";
 
 interface SavedBook {
   id: string;
@@ -30,7 +31,6 @@ interface SavedBooksProps {
   savedBooks: SavedBook[];
   onMoveToFinished: (bookId: string) => void;
   onDeleteBook: (bookId: string) => void;
-  isLoading: boolean;
 }
 
 export default function SavedBooks({
@@ -39,7 +39,6 @@ export default function SavedBooks({
   onLoadedMetadata,
   savedBooks,
   onDeleteBook,
-  isLoading,
 }: SavedBooksProps) {
   const formatTime = (duration: number | null) => {
     if (duration && !isNaN(duration)) {
@@ -67,7 +66,7 @@ export default function SavedBooks({
               onClick={(event) => handleDeleteBook(event, book.id)}
             />
           </a>
-          <a href={`/book/${book.id}`}>
+          <Link href={`/book/${book.id}`}>
             {book.subscriptionRequired && (
               <div className="book__pill">Premium</div>
             )}
@@ -103,7 +102,7 @@ export default function SavedBooks({
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       ))}
     </>

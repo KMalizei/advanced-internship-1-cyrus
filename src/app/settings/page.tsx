@@ -1,19 +1,19 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 "use client"
 import React, { useEffect, useState, useRef } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import LogInModal from "../components/UI/LogInModal";
 import usePremiumStatus from "../stripe/usePremiumStatus";
-import { useRouter } from "next/navigation";
 import SidebarSizing from "../components/UI/SidebarSizing";
 import Skeleton from "../components/UI/Skeleton";
+import Link from "next/link";
 
 function UserSettings() {
   const [email, setEmail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modal__dimRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const user = getAuth().currentUser;
   const userIsPremium = usePremiumStatus(user);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -106,12 +106,12 @@ function UserSettings() {
                           Your Subscription plan
                         </div>
                         <div className="settings__text">Basic</div>
-                        <button
+                        <Link
+                          href="/choose-plan"
                           className="btn settings__upgrade--btn"
-                          onClick={() => router.push("/choose-plan")}
                         >
                           Upgrade to Premium
-                        </button>
+                        </Link>
                       </div>
                     )}
                     <div className="setting__content">

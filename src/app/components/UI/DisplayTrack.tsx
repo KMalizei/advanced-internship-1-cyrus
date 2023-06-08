@@ -14,11 +14,11 @@ const DisplayTrack = ({
   progressBarRef,
   setDuration,
 }: AudioPlayerProps) => {
+
   const onLoadedMetadata = () => {
-    const seconds = audioRef.current.duration;
-    setDuration(seconds);
-    progressBarRef.current.max = seconds;
-  };
+  const seconds = audioRef.current.duration;
+  setDuration(seconds);
+};
 
   return (
     <div>
@@ -43,6 +43,7 @@ const DisplayTrack = ({
               className="book__image"
               style={{ display: "block" }}
               src={book?.imageLink}
+              loading="lazy"
               alt="book"
             />
           </figure>
