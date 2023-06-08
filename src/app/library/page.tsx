@@ -98,7 +98,7 @@ function Library() {
         setIsLoading(false);
       } finally {
         setTimeout(() => {
-        setIsLoading(false);
+          setIsLoading(false);
         }, 250);
       }
     };
@@ -176,14 +176,16 @@ function Library() {
                 <div className="for-you__recommended--books">
                   {isLoading ? (
                     <>
-                      {Array.from({ length: savedBooks.length }).map((_, index) => (
-                        <div
-                          className="for-you__recommended--books-link"
-                          key={index}
-                        >
-                          <RecommendedSkeleton />
-                        </div>
-                      ))}
+                      {Array.from({ length: savedBooks.length }).map(
+                        (_, index) => (
+                          <div
+                            className="for-you__recommended--books-link"
+                            key={index}
+                          >
+                            <RecommendedSkeleton />
+                          </div>
+                        )
+                      )}
                     </>
                   ) : (
                     <>
