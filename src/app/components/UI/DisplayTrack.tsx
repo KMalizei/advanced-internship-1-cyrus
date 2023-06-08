@@ -43,6 +43,7 @@ const DisplayTrack = ({
               className="book__image"
               style={{ display: "block" }}
               src={book?.imageLink}
+              loading="lazy"
               alt="book"
             />
           </figure>

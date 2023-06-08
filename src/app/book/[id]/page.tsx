@@ -19,6 +19,7 @@ import usePremiumStatus from "@/app/stripe/usePremiumStatus";
 import { getAuth } from "firebase/auth";
 import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
+import Link from "next/link";
 
 interface Book {
   id: string;
@@ -88,17 +89,15 @@ const Page = () => {
   }
 
   const premiumBookRouting = () => {
-    if (isUserAuth === false) {
+    if (!isUserAuth) {
       openModal();
-    } else if (isUserAuth === true && !book?.subscriptionRequired) {
-      router.push(`/player/${book?.id}`);
-    } else if (isUserAuth === true && book?.subscriptionRequired) {
-      if (userIsPremium === true) {
-        router.push(`/player/${book?.id}`);
-      } else {
-        router.push("/choose-plan");
-      }
+      return;
     }
+    if (!book?.subscriptionRequired || userIsPremium) {
+      router.push(`/player/${book?.id}`);
+      return;
+    }
+    router.push("/choose-plan");
   };
 
   useEffect(() => {
