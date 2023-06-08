@@ -91,18 +91,14 @@ const Page = () => {
     if (isUserAuth === false) {
       openModal();
     } else if (isUserAuth === true && !book?.subscriptionRequired) {
-      routeToPlayer();
+      router.push(`/player/${book?.id}`);
     } else if (isUserAuth === true && book?.subscriptionRequired) {
       if (userIsPremium === true) {
-        routeToPlayer();
+        router.push(`/player/${book?.id}`);
       } else {
         router.push("/choose-plan");
       }
     }
-  };
-
-  const routeToPlayer = () => {
-    router.push(`/player/${book?.id}`);
   };
 
   useEffect(() => {

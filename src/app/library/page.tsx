@@ -32,8 +32,6 @@ function Library() {
   const { addFinishedBook } = useBookStore();
   const modal__dimRef = useRef(null);
 
-  console.log(isUserAuth);
-
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -59,7 +57,7 @@ function Library() {
     };
 
     fetchSavedBooks();
-  }, []);
+  }, [isClient]);
 
   useEffect(() => {
     if (savedBookIds.length === 0) {
