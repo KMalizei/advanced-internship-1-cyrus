@@ -122,7 +122,10 @@ function Library() {
 
   const onLoadedMetadata = (id: string) => {
     const seconds = audioRefs.current[id]?.duration || 0;
-    setAudioDurations((prevDurations) => ({ ...prevDurations, [id]: seconds }));
+    setAudioDurations((prevDurations) => ({
+      ...prevDurations,
+      [id]: seconds,
+    }));
   };
 
   const moveBookToFinished = (bookId: string) => {
@@ -168,40 +171,37 @@ function Library() {
             <>
               <div className="for-you__title">Saved Books</div>
               <div className="for-you__sub--title">
-                {savedBooks.length} {savedBooks.length === 1 ? "item" : "items"}
+                &quot;{savedBooks.length}&quot;{" "}
+                {savedBooks.length === 1 ? "item" : "items"}
               </div>
-              {savedBooks.length === 0 ? (
-                <div className="no-books"></div>
-              ) : (
-                <div className="for-you__recommended--books">
-                  {isLoading ? (
-                    <>
-                      {Array.from({ length: savedBooks.length }).map(
-                        (_, index) => (
-                          <div
-                            className="for-you__recommended--books-link"
-                            key={index}
-                          >
-                            <RecommendedSkeleton />
-                          </div>
-                        )
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <SavedBooks
-                        savedBooks={savedBooks}
-                        audioDurations={audioDurations}
-                        audioRefs={audioRefs}
-                        onLoadedMetadata={onLoadedMetadata}
-                        onMoveToFinished={moveBookToFinished}
-                        onDeleteBook={onDeleteBook}
-                        isLoading={isLoading}
-                      />
-                    </>
-                  )}
-                </div>
-              )}
+              <div className="for-you__recommended--books">
+                {isLoading ? (
+                  <>
+                    {Array.from({ length: savedBooks.length }).map(
+                      (_, index) => (
+                        <div
+                          className="for-you__recommended--books-link"
+                          key={index}
+                        >
+                          <RecommendedSkeleton />
+                        </div>
+                      )
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <SavedBooks
+                      savedBooks={savedBooks}
+                      audioDurations={audioDurations}
+                      audioRefs={audioRefs}
+                      onLoadedMetadata={onLoadedMetadata}
+                      onMoveToFinished={moveBookToFinished}
+                      onDeleteBook={onDeleteBook}
+                      isLoading={isLoading}
+                    />
+                  </>
+                )}
+              </div>
               <div className="for-you__title">Finished</div>
               <div className="for-you__sub--title">&quot;0&quot; Items</div>
               <div className="for-you__recommended--books"></div>
